@@ -1,0 +1,127 @@
+{% extends "base_tw.html" %}
+{% load static %}
+{% load cloudzen_extras %}
+{% load i18n %}
+{% cz_var_exists view.gstin_list view.sync_invoices_ts_args view.invoice_count_details_list view.purchasinvoicing_list %}
+
+{% block customjsload %}
+    <script type="module" src="{% static 'generated/vite/SyncInvoices2.js' %}"></script>
+{% endblock customjsload %}
+
+{% block customjs %}
+document.addEventListener("DOMContentLoaded", function (event){
+    SyncInvoices2(
+        {{ view.sync_invoices_ts_args|cz_json:None|safe }}
+    );
+});
+{% endblock customjs %}
+
+{% block content %}
+{% cz_var_exists view.gstin_list view.sync_invoices_ts_args view.invoice_count_details_list view.purchasinvoicing_list %}
+
+<h1 class="float-right mb-2 -mt-5 text-3xl font-bold font-montserrat text-secondary">
+    Purchase Sync Dashboard
+</h1>
+
+<ul
+    class="inline-flex relative flex-col justify-start items-center p-2 space-x-2 w-full rounded-lg sm:flex-row bg-muted text-muted-foreground"
+    id="invoicing-tab"
+    data-tabs-toggle="#invoicing-tab-content"
+    role="tablist"
+    data-tabs-active-classes="bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+    data-tabs-inactive-classes="hover:bg-secondary hover:shadow-xs hover:bg-accent hover:text-accent-foreground"
+    role="tablist"
+>
+    <li role="presentation">
+        <button
+            class="inline-flex justify-center items-center py-2 px-4 h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors focus-visible:ring-1 focus-visible:outline-hidden focus-visible:ring-ring"
+            id="gstin-tab"
+            data-tabs-target="#gstin"
+            type="button"
+            role="tab"
+            aria-controls="gstin"
+            aria-selected="false"
+        >
+            GSTINs
+        </button>
+    </li>
+    <li role="presentation">
+        <button
+            class="inline-flex justify-center items-center py-2 px-4 h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors focus-visible:ring-1 focus-visible:outline-hidden focus-visible:ring-ring"
+            id="dashboard-tab"
+            data-tabs-target="#dashboard"
+            type="button"
+            role="tab"
+            aria-controls="dashboard"
+            aria-selected="false"
+        >
+            Dashboard
+        </button>
+    </li>
+    <li role="presentation">
+        <button
+            class="inline-flex justify-center items-center py-2 px-4 h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors focus-visible:ring-1 focus-visible:outline-hidden focus-visible:ring-ring"
+            id="purchasInvoicings-tab"
+            data-tabs-target="#purchasInvoicings"
+            type="button"
+            role="tab"
+            aria-controls="sales-invoices"
+            aria-selected="false"
+        >
+            Purchase Invoices
+        </button>
+    </li>
+    <li role="presentation">
+        <button
+            class="inline-flex justify-center items-center py-2 px-4 h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors focus-visible:ring-1 focus-visible:outline-hidden focus-visible:ring-ring"
+            id="sync-tab"
+            data-tabs-target="#sync"
+            type="button"
+            role="tab"
+            aria-controls="sync"
+            aria-selected="false"
+        >
+            Sync Purchase Invoices
+        </button>
+    </li>
+</ul>
+<div id="invoicing-tab-content" class="mt-2">
+    <div id="gstin" role="tabpanel" aria-labelledby="gstin-tab">
+        {% include 'invoicing/gstin_list.html' %}
+    </div>
+    <div id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+        <div
+            class="rounded-xl border transition-shadow ease-out delay-75 hover:shadow-sm shadow-xs bg-card text-card-foreground min-h-[50vh]"
+        >
+            <div class="flex flex-row items-center p-6">
+                <h3 class="font-semibold tracking-tight leading-none">Document counts</h3>
+            </div>
+            <div class="p-6 pt-0">
+                {% include 'invoicing/dashboard/invoice_counts_table.html' with invoice_count_details_list=view.invoice_count_details_list %}
+            </div>
+        </div>
+    </div>
+    <div id="purchasInvoicings" role="tabpanel" aria-labelledby="purchasInvoicings-tab">
+        <div
+            class="rounded-xl border transition-shadow ease-out delay-75 hover:shadow-sm shadow-xs bg-card text-card-foreground min-h-[50vh]"
+        >
+            <div class="flex flex-row items-center p-6">
+                <h3 class="font-semibold tracking-tight leading-none text-2xl">Recent Purchase Invoices</h3>
+                <a
+                    class="inline-flex justify-center items-center py-2 px-4 ml-auto h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors focus-visible:ring-1 shadow-xs bg-brand-yellow-300 text-secondary-foreground hover:bg-brand-yellow-300/80 focus-visible:outline-hidden focus-visible:ring-ring"
+                    href="{% url 'invoicing:invoice_list' %}"
+                    >View all Purchase Invoices</a
+                >
+            </div>
+            <div class="p-6 pt-0">
+                {% include "invoicing/purchase_invoice/sales_invoice_list_table_tw.html" with purchasinvoicing_list=view.purchasinvoicing_list %}
+            </div>
+        </div>
+    </div>
+    <div id="sync" role="tabpanel" aria-labelledby="sync-tab">
+        <div id="sync-invoices-react-app"></div>
+    </div>
+</div>
+
+{% endblock content %}
+

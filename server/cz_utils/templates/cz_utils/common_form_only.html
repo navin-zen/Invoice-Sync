@@ -1,0 +1,69 @@
+{% load bootstrap4 %}
+{% load crispy_forms_tags %}
+{% load cloudzen_extras %}
+<form autocomplete="off" action="{% if formaction %}{{ formaction }}{% else %}{{ request.path }}?{{ request.GET.urlencode }}{% endif %}"
+    {% if form.is_multipart %} enctype="multipart/form-data" {% endif %}
+    method="{{ view.cz_form_method|default:'post' }}"
+    {% if inlines %}
+        data-cz-formset-prefixes="{% for formset in inlines %}{% if not forloop.first %} {% endif %}{{ formset.prefix }}{% endfor %}"
+    {% elif formset %}
+        data-cz-formset-prefixes="{{ formset.prefix }}"
+    {% endif %}
+    class="cz-no-double-click {{ view.cz_form_css_class }} {% if not view.form_helper %}form-horizontal{% endif %}" {% if not view.validate_in_browser %}novalidate="novalidate"{% endif %}>
+    {% if view.cz_form_message_text %}
+    <div class="form-group"><div class="col-md-offset-1 col-md-10"><h4>{{ view.cz_form_message_text }}</h4></div></div>
+    {% endif %}
+    {% csrf_token %}
+    {% if form %}
+        {% if view.form_helper %}
+            <!-- Using crispy form renderer -->
+            {% crispy form view.form_helper %}
+        {% else %}
+            {% bootstrap_form form layout='horizontal' horizontal_label_class='col-md-4' horizontal_field_class='col-md-8' %}
+        {% endif %}
+    {% endif %}
+    {% if formset %}
+        {% if view.form_helper %}
+            {% crispy formset view.form_helper %}
+        {% else %}
+            {% bootstrap_formset formset layout='horizontal' horizontal_label_class='col-md-4' horizontal_field_class='col-md-8' %}
+        {% endif %}
+    {% endif %}
+    {% if view.cz_inline_formset_header %}
+        <h4> {{ view.cz_inline_formset_header }} </h4>
+    {% endif %}
+    {% for formset in inlines %}
+        <!-- Inline Formset prefix: {{ formset.prefix }} -->
+        {# Assumption: If the view has a form helper, the inline form must also have a form helper #}
+        {% if view.form_helper %}
+            {% crispy formset formset.form_helper %}
+        {% else %}
+            {% bootstrap_formset formset layout='horizontal' horizontal_label_class='col-md-4' horizontal_field_class='col-md-8' %}
+        {% endif %}
+    {% endfor %}
+    {% if view.form_helper %}
+        <div class="row"><div class="text-center col-sm-12">
+    {% else %}
+        <div class="form-group"><div class="col-md-offset-4 col-md-8">
+    {% endif %}
+         <button type="submit" class="cz-no-double-click {{ view.cz_submit_button_class|default:"btn btn-primary" }}">
+            {% if view.cz_form_button_text %}
+                {{ view.cz_form_button_text }}
+            {% else %}
+                Save {{ view.model|verbose_name }}
+            {% endif %}
+         </button>
+         {% for button in view.cz_extra_form_buttons %}
+             <button type="submit"
+                  {% if button.formmethod %}
+                     formmethod="{{ button.formmethod }}"
+                  {% endif %}
+                  {% if button.formaction %}
+                     formaction="{{ button.formaction }}"
+                  {% endif %}
+                 class="{{ button.css_class|default:"btn btn-primary" }}">
+                {{ button.text }}
+             </button>
+         {% endfor %}
+    </div></div>
+</form>

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$(readlink -f $(dirname $0))
+ACTIVATOR=${SCRIPT_DIR}/../../activator
+${ACTIVATOR} ${SCRIPT_DIR}/keep-supervisor-alive.py

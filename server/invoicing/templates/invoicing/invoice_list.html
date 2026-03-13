@@ -1,0 +1,14 @@
+{% extends "base_tw.html" %}
+{% load cloudzen_extras %}
+
+{% block content %}
+<div class="mt-4">
+    <h1 class="text-3xl font-bold mb-4">Purchase Invoices</h1>
+    <div class="rounded-xl border shadow-xs bg-card text-card-foreground">
+        <div class="p-6 pt-0 mt-4">
+            {% include "invoicing/purchase_invoice/sales_invoice_list_table_tw.html" with purchasinvoicing_list=view.purchasinvoicing_list %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

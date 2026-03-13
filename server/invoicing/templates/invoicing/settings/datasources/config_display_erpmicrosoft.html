@@ -1,0 +1,54 @@
+{% load cloudzen_extras %}
+{% cz_var_exists datasource %}
+
+<table class="table table-sm table-bordered table-striped">
+    <thead class="thead-inverse">
+        {% if datasource.type == 'file:excel' %}
+        <tr>
+            <th>Path to the excel file</th>
+        </tr>
+        <tr>
+            <td>{{datasource.config.path}}</td>
+        </tr>
+        {% endif %}
+    </thead>
+</table>
+<table class="table table-sm table-bordered table-striped">
+    <thead class="thead-inverse">
+        {% if datasource.type != 'file:excel' %}
+            <tr>
+                <th> Parameter </th>
+                <th> Value </th>
+            </tr>
+            {% if hide_backend_driver %}
+                <tr>
+                    <td>Database Driver</td>
+                    <td>{{ datasource.config.backend_driver }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+        {% if datasource.type == 'erp:microsoft' %}
+            <tr>
+                <td>Hostname</td>
+                <td>{{ datasource.config.hostname }}</td>
+            </tr>
+            <tr>
+                <td>Database Name</td>
+                <td>{{ datasource.config.database }}</td>
+            </tr>
+            {% if datasource.config.password %}
+                <tr>
+                    <td>Password</td>
+                    <td>********</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+        {% comment %}
+        <tr>
+            <td>Last Configured Time</td>
+            <td>{{ datasource.status.timestamp }}</td>
+        </tr>
+        {% endcomment %}
+    </thead>
+</table>
+

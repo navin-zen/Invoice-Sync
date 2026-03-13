@@ -1,0 +1,30 @@
+{% load cloudzen_extras %}
+
+{% block content %}
+{% cz_var_exists status %}
+    <table class="table table-bordered table-striped table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th class="text-center tight-fit"> Category </th>
+                <th class="text-center tight-fit"> Count </th>
+            </tr>
+        </thead>
+        <tr>
+            <td class="text-left tight-fit"> Running </th>
+            <td class="text-right tight-fit"> {{status.running}} </th>
+        </tr>
+        <tr>
+            <td class="text-left tight-fit"> To be run </th>
+            <td class="text-right tight-fit"> {{status.to_be_run}} </th>
+        </tr>
+        <tr>
+            <td class="text-left tight-fit"> Completed </th>
+            <td class="text-right tight-fit"> {{status.completed}} </th>
+        </tr>
+        <tr>
+            <td class="text-left tight-fit"> Failed </th>
+            <td class="text-right tight-fit"> {{status.failed}} </th>
+        </tr>
+    </table>
+{% endblock %}
+

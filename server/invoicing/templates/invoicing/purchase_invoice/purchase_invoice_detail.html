@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load cloudzen_extras %}
+{% load static %}
+{% cz_var_exists view.purchase_json %}
+
+{% block customjsload %}
+    <script type="module" src="{% static 'generated/vite/DisplayInvoicing.js' %}"></script>
+{% endblock customjsload %}
+
+{% block customjs %}
+    document.addEventListener("DOMContentLoaded", function (event) {
+        DisplayInvoicing(
+            "react-app",
+            {{ view.purchase_json|cz_json:None|safe }}
+        );
+    });
+{% endblock customjs %}
+
+{% block content %}
+    <div class="mb-3 card">
+        <div class="card-header">
+            <div class="pull-left">
+                {% if purchase_invoice.purchase_status == purchase_invoice.PIS_UPLOADED %}
+                    <h3 class="pull-left">
+                        <i class="mr-2 fa fa-check-circle-o" style="color:#4cae4c"></i>Purchase Synced
+                    </h3>
+                {% elif purchase_invoice.purchase_status == purchase_invoice.PIS_ERROR %}
+                    <h3 class="pull-left">
+                        <i class="mr-2 fa fa-minus-circle" style="color:red"></i>Error while syncing Purchase
+                    </h3>
+                {% elif purchase_invoice.purchase_status == purchase_invoice.PIS_CANDIDATE %}
+                    <h3 class="pull-left">
+                        <i class="mr-2 fa fa-dot-circle-o" style="color:#ffc107"></i>Pending Sync
+                    </h3>
+                {% else %}
+                    <h3 class="pull-left">
+                        <i class="mr-2 fa fa-minus-circle" style="color:red"></i>Non-Candidate for Sync
+                    </h3>
+                {% endif %}
+            </div>
+            <div class="pull-right">
+                <a class="btn btn-sm btn-outline-info" target="_blank"
+                   href="{% url "invoicing:purchase_invoice_html" purchase_invoice.uuid %}">
+                    <i class="fa fa-print"></i> Print HTML
+                </a>
+                <a class="btn btn-sm btn-outline-primary" target="_blank"
+                   href="{% url "invoicing:purchase_invoice_pdf" purchase_invoice.uuid %}">
+                    <i class="fa fa-file-pdf-o"></i> Download PDF
+                </a>
+                <a class="btn btn-sm btn-secondary" target="_blank"
+                   href="{% url "invoicing:purchase_invoice_json" purchase_invoice.uuid %}">JSON</a>
+                <a class="btn btn-sm btn-secondary" target="_blank"
+                   href="{% url "invoicing:purchase_invoice_response_json" purchase_invoice.uuid %}">Response JSON</a>
+            </div>
+        </div>
+        <div class="card-block">
+            {% if purchase_invoice.purchase_status == purchase_invoice.PIS_UPLOADED %}
+                <ul class="text-success">
+                    <li>Purchase Invoice has been successfully synced with GSTZEN Cloud.</li>
+                </ul>
+            {% elif purchase_invoice.purchase_status == purchase_invoice.PIS_ERROR %}
+                <ul class="text-danger">
+                    <li>Error: {{ purchase_invoice.status_message }}</li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+    <div class="mb-3 card">
+        <div class="card-header">
+            <h3 class="mb-2">{{ purchase_invoice.document_type_display }}  #{{ purchase_invoice.number }}</h3>
+        </div>
+        <div class="card-block">
+            <iframe style="width: 100%; height: 1048px; border: none;"
+                    src="{% url "invoicing:purchase_invoice_html" purchase_invoice.uuid %}"></iframe>
+        </div>
+    </div>
+{% endblock content %}

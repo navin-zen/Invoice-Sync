@@ -1,0 +1,7 @@
+{% load humanize cloudzen_extras %}
+<p class="mb-0">
+    <strong>Number</strong>: {{invoice.No}}<br />
+    <strong>Date</strong>: {{invoice.Dt}}<br />
+    <strong>Reverse Charge</strong>: {% if reverse_charge.RegRev == "Y" %} Yes {% else %} No {% endif %}<br />
+    <strong>Total Value</strong>: {{total.TotInvVal|default:0|floatformat:2|intcomma}}<br />
+</p>

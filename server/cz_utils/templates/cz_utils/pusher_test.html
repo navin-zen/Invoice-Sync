@@ -1,0 +1,33 @@
+{% extends 'public_base_with_navbar.html' %}
+{% load cloudzen_extras %}
+
+{% block customjsload %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/vfs_fonts.js"></script>
+{% endblock %}
+
+{% block customjs %}
+{% cz_var_exists view.pusher_channel %}
+var PUSHER_CHANNEL = "{{ view.pusher_channel }}";
+$(document).ready(function () {
+    new GSTZen.GSTZen.PusherTest();
+    GSTZen.CachedDataDemo.main("cached-data-demo-react-app", "{% pt_url 'cz_utils:cached_json_data_test_view' %}");
+});
+{% endblock %}
+
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-block">
+        <div id="cached-data-demo-react-app"></div>
+   </div>
+</div>
+
+<div class="card">
+    <div class="card-block">
+        <button class="btn btn-info" onclick="GSTZen.CloudZen.generatePdf('{% pt_url 'cz_utils:sample_pdf_spec' %}', 'sample.pdf')">Download Sample PDF</button>
+    </div>
+</div>
+
+{% endblock %}

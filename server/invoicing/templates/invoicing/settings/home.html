@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load cloudzen_extras %}
+
+{% block content %}
+{% cz_var_exists view.settings_info %}
+<h1 class="mb-4 text-center"> GSTZen Purchase Sync Settings </h1>
+<div class="mb-4 text-center">
+    <a href="{% url "invoicing:settings_export" %}" class="btn btn-info">Backup settings to file <i class="fa fa-download"></i></a>
+    <a href="{% url "invoicing:settings_import" %}" class="ml-4 btn btn-primary">Restore settings from file <i class="fa fa-upload"></i></a>
+</div>
+
+<div class="mb-3 card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-sm-9">
+                <h3> Data Source Settings </h3>
+            </div>
+            <div class="col-sm-3">
+                <h3 class="pull-right">
+                    {% if view.settings_info.datasource_status is True %}
+                        <span class="badge badge-success">Complete</span>
+                    {% elif view.settings_info.datasource_status is False %}
+                        <span class="badge badge-danger">Error</span>
+                    {% else %}
+                        <span class="badge badge-warning">Not Set</span>
+                    {% endif %}
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="card-block">
+        {% if view.settings_info.datasource_status is None %}
+            {% include "invoicing/settings/datasource-choices-only.html" %}
+        {% else %}
+            {% include "invoicing/settings/datasource-config-display.html" with datasource=view.settings_info.datasource_settings %}
+            <div class="text-center">
+                <a href="{% url "invoicing:data_source_choices" %}" class="btn btn-primary">Change Data Source Settings</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-sm-9">
+                <h3> Data Mapping Settings </h3>
+            </div>
+            <div class="col-sm-3">
+                <h3 class="pull-right">
+                    {% if view.settings_info.datamapping_status %}
+                        <span class="badge badge-success">Complete</span>
+                    {% else %}
+                        <span class="badge badge-warning">Pending</span>
+                    {% endif %}
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="card-block">
+        {% if view.settings_info.datasource_status is True %}
+            {% if view.settings_info.mapping_details_display and view.settings_info.metadata.datasource.type != 'file:excel' %}
+                <h4 class="text-center">
+                    Mapping of Purchase Sync Schema to your Database
+                    <a href="{% url "invoicing:data_mapping_choose_table" %}" class="btn btn-primary">Change Mapping
+                    </a>
+                </h4>
+                {% include "invoicing/settings/datamapping/chosen_columns.html" with mapping_details_display=view.settings_info.mapping_details_display %}
+            {% elif view.settings_info.mapping_details_display and view.settings_info.metadata.datasource.type == 'file:excel' %}
+            <h4 class="text-center">
+                Mapping of Purchase Sync Schema to your Excel
+                <a href="{% url "invoicing:data_mapping_choose_worksheet" %}" class="btn btn-primary">Change Mapping
+                </a>
+            </h4>
+            {% include "invoicing/settings/datamapping/chosen_columns.html" with mapping_details_display=view.settings_info.mapping_details_display %}
+            {% else %}
+                {% if view.settings_info.metadata.datasource.type != 'file:excel' %}
+                    <div class="text-center">
+                        <a href="{% url "invoicing:data_mapping_choose_table" %}"
+                                class="btn btn-primary">Click here to map your database against the Purchase Sync schema
+                        </a>
+                    </div>
+                {% elif view.settings_info.metadata.datasource.type == 'file:excel' %}
+                    <div class="text-center">
+                        <a href="{% url "invoicing:data_mapping_choose_worksheet" %}"
+                                class="btn btn-primary">Click here to map your Excel sheet against the Purchase Sync schema
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <h5 class="text-center text-danger">You have not provided details of your data source.</h5>
+        {% endif %}
+    </div>
+</div>
+
+<br>
+<div class="mb-3 card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-sm-9">
+                <h3> Error Configuration Emails </h3>
+            </div>
+            <div class="col-sm-3">
+            </div>
+        </div>
+    </div>
+    <div class="card-block">
+            {% include "invoicing/settings/error_configuration_emails.html" %}
+        <div class="text-center">
+            <a href="{% url "invoicing:error_configuration_update" %}" class="btn btn-primary">Add Emails</a>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+

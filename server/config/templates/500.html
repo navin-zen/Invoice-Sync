@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Server error
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block content %}
+<div class="text-center alert alert-danger">
+    <p class=""><i class="fa fa-frown-o" style="font-size: 10em;"></i></p>
+    <p class="display-4">We are sorry!</p>
+    <p class="lead">
+    The server encountered an error. We have received an email about this
+    error and will work on fixing it as soon as possible. Thank you for
+    your understanding.
+    <br/>
+    Please visit the <a href="/">GSTZen home page</a>.
+    </p>
+</div>
+{% endblock %}

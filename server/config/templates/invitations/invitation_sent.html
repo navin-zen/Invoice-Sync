@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block head_title %}{% trans "Invitation Sent" %}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-block">
+	    <h3>{% trans "Invitation Sent" %}</h3>
+            <p>Thank you for inviting another user to your GSTZen Portal. We have sent them an invitation e-mail. Please ask them to visit the link in their email to complete their Signup process.
+            </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends view.base_template_name %}
+{% load cloudzen_extras %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-block">
+            {% include 'cz_utils/common_form_only.html' %}
+        </div>
+    </div>
+    {% if formset and formset.errors %}
+        <div class="alert alert-block alert-danger">
+            gvgvygvyg
+            <i class="fa fa-exclamation-triangle"></i> {% trans "Please correct the errors mentioned below and try again!" %}
+        </div>
+    {% endif %}
+{% endblock %}

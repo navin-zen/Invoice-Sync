@@ -1,0 +1,5 @@
+{# Display error message along with error code #}
+{% load i18n %}
+{% load cloudzen_extras %}
+{% cz_var_exists error %}
+{{ error.message }}

@@ -1,0 +1,284 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" layer(base);
+@import "https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css" layer(base);
+@import "https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" layer(base);
+@import "https://unpkg.com/@phosphor-icons/web@2.1.1/src/thin/style.css" layer(base);
+@import "https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css" layer(base);
+@import "https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" layer(base);
+@import "https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css" layer(base);
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+@source "../../src/**/*.{ts,tsx,js,html}";
+/* We will need these folders in frontend-build image. Match the folder where */
+/* you use tailwind here, and Dockerfile */
+
+/* html and py matching is not working, hence, separate .html and .py entry */
+@source "../../../server/invoicing/**/*.html";
+@source "../../../server/invoicing/**/*.py";
+@source "../../../server/config/**/*.html";
+@source "../../../server/config/**/*.py";
+@source "../../../server/cz_utils/**/*.html";
+@source "../../../server/cz_utils/**/*.py";
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.129 0.042 264.695);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.129 0.042 264.695);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.129 0.042 264.695);
+  --primary: hsl(217 89% 42.64%);
+  --primary-foreground: oklch(0.984 0.003 247.858);
+  --secondary: hsl(217 89% 90.88%);
+  --secondary-foreground: oklch(0.208 0.042 265.755);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.208 0.042 265.755);
+  --destructive: hsl(0 84.2% 60.2%);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: hsl(217 89% 42.64%);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.984 0.003 247.858);
+  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar-primary: oklch(0.208 0.042 265.755);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.968 0.007 247.896);
+  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-border: oklch(0.929 0.013 255.508);
+  --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  /* Brand Colors */
+  --brand-blue-50: hsl(217 89% 97.72%);
+  --brand-blue-100: hsl(217 89% 95.45%);
+  --brand-blue-200: hsl(217 89% 90.88%);
+  --brand-blue-300: hsl(217 89% 84.43%);
+  --brand-blue-400: hsl(217 89% 74.34%);
+  --brand-blue-500: hsl(217 89% 63.95%); /* brand */
+  --brand-blue-600: hsl(217 89% 53.26%);
+  --brand-blue-700: hsl(217 89% 42.64%);
+  --brand-blue-800: hsl(217 89% 34.11%);
+  --brand-blue-900: hsl(217 89% 28.22%);
+  --brand-blue-950: hsl(217 89% 15.87%);
+
+  --brand-red-50: hsl(5 69.5% 97.97%);
+  --brand-red-100: hsl(5 69.5% 95.57%);
+  --brand-red-200: hsl(5 69.5% 91.05%);
+  --brand-red-300: hsl(5 69.5% 84.82%);
+  --brand-red-400: hsl(5 69.5% 74.63%);
+  --brand-red-500: hsl(5 69.5% 63.99%);
+  --brand-red-600: hsl(5 69.5% 51.28%); /* brand */
+  --brand-red-700: hsl(5 69.5% 40.96%);
+  --brand-red-800: hsl(5 69.5% 32.62%);
+  --brand-red-900: hsl(5 69.5% 27.06%);
+  --brand-red-950: hsl(5 69.5% 15.56%);
+
+  --brand-yellow-50: hsl(44 100% 94.87%);
+  --brand-yellow-100: hsl(44 100% 88.24%);
+  --brand-yellow-200: hsl(44 100% 76.47%);
+  --brand-yellow-300: hsl(44 100% 57.35%); /* brand */
+  --brand-yellow-400: hsl(44 100% 43.88%);
+  --brand-yellow-500: hsl(44 100% 36.64%);
+  --brand-yellow-600: hsl(44 100% 29.73%);
+  --brand-yellow-700: hsl(44 100% 23.77%);
+  --brand-yellow-800: hsl(44 100% 18.92%);
+  --brand-yellow-900: hsl(44 100% 15.5%);
+  --brand-yellow-950: hsl(44 100% 8.82%);
+
+  --brand-green-50: hsl(151 82.6% 95.31%);
+  --brand-green-100: hsl(151 82.6% 88.97%);
+  --brand-green-200: hsl(151 82.6% 77.33%);
+  --brand-green-300: hsl(151 82.6% 52.71%);
+  --brand-green-400: hsl(151 82.6% 42.96%);
+  --brand-green-500: hsl(151 82.6% 35.87%); /* brand */
+  --brand-green-600: hsl(151 82.6% 28.99%);
+  --brand-green-700: hsl(151 82.6% 23.19%);
+  --brand-green-800: hsl(151 82.6% 18.46%);
+  --brand-green-900: hsl(151 82.6% 15.25%);
+  --brand-green-950: hsl(151 82.6% 8.6%);
+
+  /* Notification Colors */
+  --alert-success-border: hsl(151 82.6% 23.19%);
+  --alert-success-bg: hsl(151 82.6% 88.97%);
+
+  --alert-info-border: hsl(217 89% 42.64%);
+  --alert-info-bg: hsl(217 89% 90.88%);
+
+  --alert-warning-border: hsl(38 92% 50%);
+  --alert-warning-bg: hsl(55 97% 88%);
+
+  --alert-destructive-border: hsl(0 72% 51%);
+  --alert-destructive-bg: hsl(0 96% 89%);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-brand-blue-50: var(--brand-blue-50);
+  --color-brand-blue-100: var(--brand-blue-100);
+  --color-brand-blue-200: var(--brand-blue-200);
+  --color-brand-blue-300: var(--brand-blue-300);
+  --color-brand-blue-400: var(--brand-blue-400);
+  --color-brand-blue-500: var(--brand-blue-500);
+  --color-brand-blue-600: var(--brand-blue-600);
+  --color-brand-blue-700: var(--brand-blue-700);
+  --color-brand-blue-800: var(--brand-blue-800);
+  --color-brand-blue-900: var(--brand-blue-900);
+  --color-brand-blue-950: var(--brand-blue-950);
+
+  --color-brand-red-50: var(--brand-red-50);
+  --color-brand-red-100: var(--brand-red-100);
+  --color-brand-red-200: var(--brand-red-200);
+  --color-brand-red-300: var(--brand-red-300);
+  --color-brand-red-400: var(--brand-red-400);
+  --color-brand-red-500: var(--brand-red-500);
+  --color-brand-red-600: var(--brand-red-600);
+  --color-brand-red-700: var(--brand-red-700);
+  --color-brand-red-800: var(--brand-red-800);
+  --color-brand-red-900: var(--brand-red-900);
+  --color-brand-red-950: var(--brand-red-950);
+
+  --color-brand-yellow-50: var(--brand-yellow-50);
+  --color-brand-yellow-100: var(--brand-yellow-100);
+  --color-brand-yellow-200: var(--brand-yellow-200);
+  --color-brand-yellow-300: var(--brand-yellow-300);
+  --color-brand-yellow-400: var(--brand-yellow-400);
+  --color-brand-yellow-500: var(--brand-yellow-500);
+  --color-brand-yellow-600: var(--brand-yellow-600);
+  --color-brand-yellow-700: var(--brand-yellow-700);
+  --color-brand-yellow-800: var(--brand-yellow-800);
+  --color-brand-yellow-900: var(--brand-yellow-900);
+  --color-brand-yellow-950: var(--brand-yellow-950);
+
+  --color-brand-green-50: var(--brand-green-50);
+  --color-brand-green-100: var(--brand-green-100);
+  --color-brand-green-200: var(--brand-green-200);
+  --color-brand-green-300: var(--brand-green-300);
+  --color-brand-green-400: var(--brand-green-400);
+  --color-brand-green-500: var(--brand-green-500);
+  --color-brand-green-600: var(--brand-green-600);
+  --color-brand-green-700: var(--brand-green-700);
+  --color-brand-green-800: var(--brand-green-800);
+  --color-brand-green-900: var(--brand-green-900);
+  --color-brand-green-950: var(--brand-green-950);
+
+  /* Notification Colors */
+  --color-alert-success-border: var(--alert-success-border);
+  --color-alert-success-bg: var(--alert-success-bg);
+
+  --color-alert-info-border: var(--alert-info-border);
+  --color-alert-info-bg: var(--alert-info-bg);
+
+  --color-alert-warning-border: var(--alert-warning-border);
+  --color-alert-warning-bg: var(--alert-warning-bg);
+
+  --color-alert-destructive-border: var(--alert-destructive-border);
+  --color-alert-destructive-bg: var(--alert-destructive-bg);
+
+  --font-sans: "Inter", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-mono: "FiraCode", monospace;
+  --font-arialrounded: "Arial Rounded MT", "Arial", "sans-serif";
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  h1,
+  .h1 {
+    @apply scroll-m-20 text-4xl font-extrabold lg:text-6xl font-montserrat;
+  }
+  h2,
+  .h2 {
+    @apply scroll-m-20 text-2xl lg:text-4xl font-semibold tracking-tight font-montserrat;
+  }
+  h3,
+  .h3 {
+    @apply scroll-m-20 text-xl lg:text-3xl font-medium tracking-tight font-montserrat;
+  }
+  h4,
+  .h4 {
+    @apply scroll-m-20 lg:text-xl font-medium tracking-tight font-montserrat;
+  }
+  p,
+  .p {
+    @apply leading-7;
+  }
+  blockquote,
+  .blockquote {
+    @apply mt-6 border-l-2 pl-6 italic;
+  }
+  code,
+  .code {
+    @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-medium;
+  }
+  small,
+  .small {
+    @apply text-sm font-medium leading-none;
+  }
+}
+
+@utility container {
+  @apply mx-auto p-8 2xl:max-w-[1440px];
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter/InterVariable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/Montserrat/Montserrat-VF.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "FiraCode";
+  src: url("../fonts/FiraCode/FiraCode-VF.woff2") format("woff2");
+}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Server error
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block content %}
+<div class="text-center alert alert-danger">
+    <p class=""><i class="fa fa-frown-o" style="font-size: 10em;"></i></p>
+    <p class="display-4">We are sorry!</p>
+    <p class="lead">
+    Timed out waiting for a response from GSTN: {{ exception_value }}
+    <br/>
+    This usually happens when GSTN is under heavy load. There is nothing we
+    can do.
+    <br/>
+    Please visit the <a href="/">GSTZen home page</a>.
+    </p>
+</div>
+{% endblock %}

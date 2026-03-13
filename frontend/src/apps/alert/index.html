@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/src/styles/index.css" rel="stylesheet" />
+    <script crossorigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js"></script>
+    <title>Testing</title>
+    <style type="text/css">
+      #to-the-top {
+        transition:
+          background-color 0.3s,
+          opacity 0.2s,
+          visibility 0.2s;
+        opacity: 0;
+        visibility: hidden;
+      }
+      #to-the-top.flex {
+        opacity: 1;
+        visibility: visible;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen font-inter">
+    <nav
+      class="sticky top-0 z-50 py-0 px-4 w-full border-b h-[55px] border-border/40 bg-brand-blue-100/95 backdrop-blur-xs supports-backdrop-filter:bg-brand-blue-100/60"
+      id="navbar"
+    ></nav>
+
+    <nav class="flex bottom-1 z-50 py-2 px-4 max-w-full text-gray-700 border-b h-[40px]" aria-label="Breadcrumb">
+      <a href="/" class="text-red-600 hover:text-blue-800"><i class="mr-2 fa-solid fa-house-lock"></i>Home</a>
+    </nav>
+    <div class="container pt-5 min-h-screen">
+      <!--Modify only this section of the template with your app-->
+      <div id="alert"></div>
+      Only last 3 will be seen at the top. Close to see others
+
+      <script type="module">
+        import { alert } from "./main.tsx";
+
+        alert("alert", [
+          {
+            id: "1",
+            message: "This is a success message",
+            tag: "success",
+          },
+          {
+            id: "2",
+            message: "This is a second success message",
+            tag: "success",
+          },
+          {
+            id: "3",
+            message: "This is a info message",
+            tag: "info",
+          },
+          {
+            id: "4",
+            message: "This is a warning message",
+            tag: "warning",
+          },
+          {
+            id: "5",
+            message: "This is a danger message",
+            tag: "danger",
+          },
+        ]);
+      </script>
+      <!--Modify only this section of the template with your app-->
+
+      <a
+        id="to-the-top"
+        class="fixed right-24 items-center p-2 h-10 text-center whitespace-nowrap hover:cursor-pointer rounded-xs bottom-[14px] z-1000 bg-brand-blue-500 hover:bg-brand-green-500 active:bg-brand-blue-600"
+      >
+        Back to Top<i class="ml-2 fa fa-chevron-up"></i>
+      </a>
+    </div>
+    <nav
+      class="inline-block pb-8 mt-4 w-full font-sans text-gray-600 align-top border-t h-[300px] bg-secondary"
+      id="navbar"
+    ></nav>
+    <script>
+      const scrollToTopBtn = document.getElementById("to-the-top");
+      function scrollFunction() {
+        if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
+          scrollToTopBtn.classList.add("flex");
+        } else {
+          scrollToTopBtn.classList.remove("flex");
+        }
+      }
+      function backToTop() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      scrollToTopBtn.addEventListener("click", backToTop);
+      window.addEventListener("scroll", scrollFunction);
+    </script>
+  </body>
+</html>

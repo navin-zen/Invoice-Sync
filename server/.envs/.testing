@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+ENVIRON_DIR=$(readlink -f $(dirname $0))
+ROOT_DIR=$(dirname ${ENVIRON_DIR})
+
+export DJANGO_SETTINGS_MODULE="config.settings.testing"
+export GST_DJANGO_DEBUG=true
+export GST_DJANGO_SECRET_KEY="Hello World"
+export GST_PUSHER_KEY="unused"
+export GST_PUSHER_SECRET="unused"
+export GST_GSTN_CLIENT_ID="unused-client-id"
+export GST_GSTN_CLIENT_SECRET="unused-client-secret"
+export GSTN_ENVIRONMENT=""  # sandbox environment has no private key
+export GST_AWS_ACCESS_KEY_ID="AKIAAAAAAAAAAAAAAAAQ"  # Dummy credentials
+export GST_AWS_SECRET_ACCESS_KEY="SIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3r"
+export GST_AWS_STORAGE_BUCKET_NAME="gstzen-dev"
+export GST_LOG_LEVEL="WARNING"
+
+"$@"

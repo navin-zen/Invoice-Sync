@@ -1,0 +1,58 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load cloudzen_extras %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-12" style="">
+        <div class="card">
+            <div class="card-block">
+                <h3>{% trans "Sign Up" %}</h3>
+                <p class="mb-0">Already have an account? Then please <a
+                    href="{{ login_url }}">login</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% comment %}
+<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <button type="submit">{% trans "Sign Up" %} &raquo;</button>
+</form>
+{% endcomment %}
+
+<div class="row">
+    <div class="col-sm-6 offset-sm-3">
+        <div class="card form-header-container">
+            <div class="card-block">
+                <div class="form-header">
+                    <h3><i class="fa fa-lock"></i> {% trans "New Account Sign Up" %} </h3>
+                </div>
+                <form class="signup" method="POST" action="{% url 'account_signup' %}">
+                    {% csrf_token %}
+                    {% crispy form view.form_helper %}
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+                    <div class="row"><div class="pt-3 text-center col-sm-12">
+                        <button type="submit" class="btn btn-success btn-block">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+ENVIRON_DIR=$(readlink -f $(dirname $0))
+ROOT_DIR=$(dirname ${ENVIRON_DIR})
+
+export DJANGO_SETTINGS_MODULE="config.settings.development"
+export GST_MOCKGSTN_SERVER_URL=https://my.gstzen.in/mockgstn
+export GSTN_ENVIRONMENT=sandbox
+export GST_NGINX_PORT=9008
+
+export TO_IRP_THROUGH_ZEN=True
+# export EINVOICE_INPUT_PATH="/vagrant/demo/"
+# export EINVOICE_WRITEBACK_PATH="/vagrant/pdf_output/"
+# export EINVOICE_ERROR_PATH="/vagrant/einvoice_errors/"
+
+if [ -f ${ENVIRON_DIR}/.development.secret ]
+then
+	source ${ENVIRON_DIR}/.development.secret
+fi
+
+# These should go in development.secret
+# Adding them here for reference
+# export GSTZEN_AUTH_TOKEN="1f4c8876-e492-4bde-bf88-242cf9b09d22"
+# export PDF_OUTPUT_DIR="C:\\Users\\Srivatsa B\\Desktop\\"
+# export PDF_OUTPUT_DIR_WSL="/mnt/c/Users/Srivatsa B/Desktop"
+# export CHROME_PATH="/mnt/c/Users/Naveen/AppData/Local/Google/Chrome/Application/chrome.exe"
+# export COMPLETED_FILE_MOVE_DIR="/mnt/c/Users/Srivatsa B/Desktop"
+# export TO_IRP_THROUGH_ZEN=False
+# export ALLOWED_HOSTS_EXTRA="*"  # optional, if required to listen on hosts other than localhost
+# export GSTN_ENVIRONMENT=direct # if you want direct NIC access without going through Zen
+
+"$@"

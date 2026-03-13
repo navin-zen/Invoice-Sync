@@ -1,0 +1,212 @@
+{% load static %}
+{% load cloudzen_extras %}
+{% load i18n %}
+
+<!doctype html>
+<html {% block extraHtmlTags %}{% endblock %} lang="en">
+    <head>
+        <!-- Favicons -->
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png?v=7kbajmgz6w"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png?v=7kbajmgz6w"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png?v=7kbajmgz6w"
+        />
+        <link rel="manifest" href="/manifest.json?v=7kbajmgz6w" />
+        <link
+            rel="mask-icon"
+            href="/safari-pinned-tab.svg?v=7kbajmgz6w"
+            color="#02c1d8"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <link rel="shortcut icon" href="/favicon.ico?v=7kbajmgz6w" />
+        <meta charset="utf-8" />
+        <meta name="msapplication-TileColor" content="#02c1d8" />
+        <meta
+            name="msapplication-TileImage"
+            content="/mstile-144x144.png?v=7kbajmgz6w"
+        />
+        <meta name="theme-color" content="#02c1d8" />
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha256-+kIbbrvS+0dNOjhmQJzmwe/RILR/8lb/+4+PUNVW09k="
+            crossorigin="anonymous"
+        ></script>
+
+        {% block seo_meta %} {% endblock %}
+        {% block opengraph_meta %} {% endblock %}
+
+        <!-- End Favicons -->
+        <title>
+            {% block title %}GSTZen - Peaceful GST Compliance{% endblock %}
+        </title>
+
+        {% js_constants %} {% block customjsload %}{% endblock %}
+        {% comment %}
+            <script type="text/javascript">
+                function gettext(s) {
+                    return s;
+                }
+            </script>
+        {% endcomment %}
+
+        {% comment %}
+            {# <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>#}
+            {# We will enable statici18n soon #}
+            {% if LANGUAGE_CODE %}
+                <script
+                    type="text/javascript"
+                    src="{% statici18n LANGUAGE_CODE %}"
+                ></script>
+            {% else %}
+                <script type="text/javascript" src="{% statici18n 'en' %}"></script>
+            {% endif %}
+        {% endcomment %}
+        <script
+            type="text/javascript"
+            src="{% static 'generated/javascript/bundle.js' %}"
+        ></script>
+        {% comment %}
+            <script src="{% static 'js/sorttable.js' %}"></script>
+        {% endcomment %}
+
+        {% comment %}
+            $(document).ready(function () {
+                GSTZen.CloudZen.printVersion();
+                GSTZen.GSTZen.initializePage();
+                GSTZen.CloudZen.checkBrowserVersion();
+            });
+        {% endcomment %}
+
+        {% comment %}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                Bookshelf.CloudZen.printVersion();
+                Bookshelf.CloudZenEPC.initializePage();
+            });
+        </script>
+        {% endcomment %}
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            href="{% static 'css/main-bootstrap.css' %}"
+            rel="stylesheet"
+        />
+        <style type="text/css">
+            {% block customcss %}
+            {% endblock %}
+        </style>
+        {% comment %}
+            {% include 'google-analytics.html' %}
+        {% endcomment %}
+    </head>
+    <body style="background-color: white;">
+        {% block navbar %}
+            {% include 'navbar.html' %}
+        {% endblock navbar %}
+
+        {% block breadcrumbs_outer %}
+            <nav class="breadcrumb" style="background-color: transparent;">
+                {% block breadcrumbs %}
+                    {% for url, text, long_text in view.cz_breadcrumb.path %}
+                        {% if forloop.last %}
+                            <a
+                                class="breadcrumb-item active"
+                                href="{{ url }}"
+                            >
+                                {{ text }}
+                            </a>
+                        {% else %}
+                            <a class="breadcrumb-item" href="{{ url }}">{{ text }}</a>
+                        {% endif %}
+                    {% endfor %}
+                {% endblock %}
+            </nav>
+        {% endblock %}
+
+        <div class="container pt-3">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="content">
+
+                        <div id="django-messages">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    <a href="#" class="close" data-dismiss="alert"
+                                        >&times;</a
+                                    >
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {% block content_immediate_outer %}
+                            {% block content %}
+                                The content of this page should be specified within a
+                                block named 'content'.
+                                https://docs.djangoproject.com/en/1.11/ref/templates/language/#template-inheritance
+                            {% endblock content %}
+                        {% endblock content_immediate_outer %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'footer.html' %}
+
+        {% if not debug %}
+        {# freshdesk_popup request #}
+        {% endif %}
+
+        {% block cz_attachments %}{% endblock %}
+
+        {% comment %}
+            {% if debug %}
+            <div
+                id="cz-screen-size-info"
+                style="
+                    position: fixed;
+                    top: 0px;
+                    right: 50vw;
+                    background: gray;
+                    color: white;
+                    z-index: 100000;
+                    padding: 1em;
+                "
+            >
+                <div class="hidden-sm-up">xs</div>
+                <div class="hidden-xs-down hidden-md-up">sm</div>
+                <div class="hidden-sm-down hidden-lg-up">md</div>
+                <div class="hidden-md-down hidden-xl-up">lg</div>
+                <div class="hidden-lg-down">xl</div>
+            </div>
+            {% endif %}
+        {% endcomment %}
+    </body>
+    <script type="text/javascript">
+        {% block customjs %}{% endblock %}
+    </script>
+    {% comment %}
+    <!--
+        SQL debug: {{ ''|sql_debug_flag }}
+        Total SQL query count: {{ 0|sql_query_count }}
+        Total SQL query execution time (ms): {{ 0|sql_query_time_ms }}
+    -->
+    {% endcomment %}
+</html>

@@ -1,0 +1,30 @@
+{% if invoicing.RefDtls %}
+<table class="table my-2 table-bordered" style="page-break-inside:avoid;page-break-before:auto;">
+    <tbody>
+        <tr>
+            <td>
+                <strong>Reference Details</strong><br />
+                {% if invoicing.RefDtls.PrecDocDtls %}
+                    {% for i in invoicing.RefDtls.PrecDocDtls %}
+                        Preceding Document Number: {{i.InvNo}} <br />
+                        Preceding Document Date: {{i.InvDt}} <br />
+                        {% if i.OthRefNo %} Other Reference Number: {{i.OthRefNo}} <br /> {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if invoicing.RefDtls.ContrDtls %}
+                    {% for i in invoicing.RefDtls.ContrDtls %}
+                        Contract Number: {{i.RecAdvRefr}} <br />
+                        {% if i.RecAdvDt %} Receipt/Advice Date: {{i.RecAdvDt}} <br /> {% endif %}
+                        {% if i.TendRefr %} Tender Number: {{i.TendRefr}} <br /> {% endif %}
+                        {% if i.ContrRefr %} Contract Number: {{i.ContrRefr}} <br /> {% endif %}
+                        {% if i.ExtRefr %} External Number: {{i.ExtRefr}} <br /> {% endif %}
+                        {% if i.ProjRefr %} Project Number: {{i.ProjRefr}} <br /> {% endif %}
+                        {% if i.PORefr %} Purchase Order Number: {{i.PORefr}} <br /> {% endif %}
+                        {% if i.PORefDt %} Purchase Order Date: {{i.PORefDt}} <br /> {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}

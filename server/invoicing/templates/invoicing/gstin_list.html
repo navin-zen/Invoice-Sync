@@ -1,0 +1,41 @@
+{% block content %}
+{% load cloudzen_extras %}
+<div class="rounded-xl border transition-shadow ease-out delay-75 hover:shadow-sm shadow-xs bg-card text-card-foreground min-h-[50vh]">
+    <div class="flex flex-row items-center p-6">
+        <h3 class="font-semibold tracking-tight leading-none">GST Registrations</h3>
+        <a class="inline-flex justify-center items-center py-2 px-4 ml-auto h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors focus-visible:ring-1 shadow-xs bg-brand-yellow-300 text-secondary-foreground hover:bg-brand-yellow-300/80 focus-visible:outline-hidden focus-visible:ring-ring" href="{% url "invoicing:gst_in_create_simple" %}">Add a new GSTIN</a>
+    </div>
+    <div class="p-6 pt-0">
+        <div class="relative w-full">
+        <table class="w-full text-sm caption-bottom">
+            <thead class="[&_tr]:border-b">
+                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <th class="h-10 whitespace-nowrap px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center"> GSTIN </th>
+                    <th class="h-10 whitespace-nowrap px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center"> Name </th>
+                </tr>
+            </thead>
+            <tbody class="[&_tr:last-child]:border-0">
+            {% for o in view.gstin_list %}
+                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <td class="p-2 px-6 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]">
+                        <a class="inline-flex justify-center items-center w-full font-mono text-sm font-medium whitespace-nowrap rounded-md transition-colors hover:underline focus-visible:ring-1 text-primary underline-offset-4 focus-visible:outline-hidden focus-visible:ring-ring" href="{{ o.get_absolute_url }}">{{ o.gstin }}</a>
+                    </td>
+                    <td class="w-full p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]">
+                        {{ o.name|cz_truncatechars:50 }}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <td class="p-6 text-muted-foreground align-middle text-center [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]" colspan="1000">
+                        No GSTINs added
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+</div>
+
+{% endblock content %}
+

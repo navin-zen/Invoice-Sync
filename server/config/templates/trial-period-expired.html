@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    GSTZen | Trial Period Expired
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block content %}
+<div class="text-center alert alert-info">
+    <p class=""><i class="fa fa-clock-o" style="font-size: 10em;"></i></p>
+    <p class="display-4">{{ exception_value }}</p>
+    <p class="lead">
+    We sincerely thank you for using GSTZen.
+    <br/>
+    We would <i class="fa fa-heart"></i> to have you using our service.
+    <br />
+    To continue, please contact us over email at <a class="cz-bold"
+        href="mailto:support@gstzen.in">support@gstzen.in</a> or over chat.
+    <br/>
+    Please visit the <a href="https://www.gstzen.in" class="cz-bold">GSTZen home page</a>.
+    </p>
+</div>
+{% endblock %}

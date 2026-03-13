@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load cloudzen_extras %}
+
+{% block title %}Waiting for file{% endblock %}
+
+{% block customjs %}
+{% cz_var_exists pusher_channel %}
+var PUSHER_CHANNEL = "{{ pusher_channel }}";
+$(document).ready(function () {
+    GSTZen.Deferred.deferredView("react-app");
+});
+{% endblock %}
+
+{% block content %}
+<div id="react-app"></div>
+{% endblock %}

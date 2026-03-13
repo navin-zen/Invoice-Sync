@@ -1,0 +1,394 @@
+{
+  "995413": {
+    "name": "Construction services of industrial buildings such as buildings used for production activities (used for assembly line activities), workshops, storage buildings and other similar industrial buildings",
+    "number": "995413"
+  },
+  "995428": {
+    "name": "General construction services of other civil engineering works n.e.c.",
+    "number": "995428"
+  },
+  "995429": {
+    "name": "Services involving Repair, alterations, additions, replacements, renovation, maintenance or remodelling of the constructions covered above.",
+    "number": "995429"
+  },
+  "995431": {
+    "name": "Demolition services",
+    "number": "995431"
+  },
+  "995432": {
+    "name": "Site formation and clearance services including preparation services to make sites ready for subsequent construction work, test drilling & boring & core extraction, digging of trenches.",
+    "number": "995432"
+  },
+  "995444": {
+    "name": "Other assembly and erection services n.e.c.",
+    "number": "995444"
+  },
+  "995452": {
+    "name": "Building framing & Roof Framing services",
+    "number": "995452"
+  },
+  "995456": {
+    "name": "Masonry services",
+    "number": "995456"
+  },
+  "995458": {
+    "name": "Other special trade construction services n.e.c.",
+    "number": "995458"
+  },
+  "995465": {
+    "name": "Insulation services",
+    "number": "995465"
+  },
+  "995468": {
+    "name": "Other installation services n.e.c.",
+    "number": "995468"
+  },
+  "996211": {
+    "name": "Services provided for a fee/commission or contract basis on retail trade",
+    "number": "996211"
+  },
+  "996321": {
+    "name": "Room or unit accommodation services for students in student residences",
+    "number": "996321"
+  },
+  "996334": {
+    "name": "Catering Services in Exhibition halls, Events, Marriage Halls and other outdoor/indoor functions.",
+    "number": "996334"
+  },
+  "996336": {
+    "name": "Preparation and/or supply services of food, edible preparations, alchoholic & non-alchocholic beverages to airlines and other transportation operators",
+    "number": "996336"
+  },
+  "996411": {
+    "name": "Local land transport services of passengers by railways, metro, monorail, bus, tramway, autos, three wheelers, scooters and other motor vehicles",
+    "number": "996411"
+  },
+  "996511": {
+    "name": "Road transport services of Goods including letters, parcels, live animals, household & office furniture, containers etc by refrigerator vehicles, trucks, trailers, man or animal drawn vehicles or any other vehicles.",
+    "number": "996511"
+  },
+  "996522": {
+    "name": "Inland water transport services of goods by refrigerator vessels, tankers and other vessels.",
+    "number": "996522"
+  },
+  "996531": {
+    "name": "Air transport services of letters & parcels and other goods",
+    "number": "996531"
+  },
+  "996601": {
+    "name": "Rental services of road vehicles including buses, coaches, cars, trucks and other motor vehicles, with or without operator",
+    "number": "996601"
+  },
+  "996602": {
+    "name": "Rental services of water vessels including passenger vessels, freight vessels etc with or without operator",
+    "number": "996602"
+  },
+  "996749": {
+    "name": "Other supporting services for road transport n.e.c.",
+    "number": "996749"
+  },
+  "996762": {
+    "name": "Air traffic control services",
+    "number": "996762"
+  },
+  "996764": {
+    "name": "Supporting services for space transport",
+    "number": "996764"
+  },
+  "996921": {
+    "name": "Water distribution services",
+    "number": "996921"
+  },
+  "996929": {
+    "name": "Other similar services.",
+    "number": "996929"
+  },
+  "997114": {
+    "name": "Financial leasing services",
+    "number": "997114"
+  },
+  "997120": {
+    "name": "Investment banking services",
+    "number": "997120"
+  },
+  "997131": {
+    "name": "pension services",
+    "number": "997131"
+  },
+  "997134": {
+    "name": "Motor vehicle insurance services",
+    "number": "997134"
+  },
+  "997142": {
+    "name": "Accident and health reinsurance services",
+    "number": "997142"
+  },
+  "997147": {
+    "name": "Other property reinsurance services",
+    "number": "997147"
+  },
+  "997221": {
+    "name": "Property management services on a fee/commission basis or contract basis",
+    "number": "997221"
+  },
+  "997311": {
+    "name": "Leasing or rental services concerning transport equipments including containers, with or without operator",
+    "number": "997311"
+  },
+  "997313": {
+    "name": "Leasing or rental services concerning construction machinery and equipment with or without operator",
+    "number": "997313"
+  },
+  "997316": {
+    "name": "Leasing or rental services concerning telecommunications equipment with or without operator",
+    "number": "997316"
+  },
+  "997319": {
+    "name": "Leasing or rental services concerning other machinery and equipments with or without operator",
+    "number": "997319"
+  },
+  "997324": {
+    "name": "Leasing or rental services concerning pleasure and leisure equipment.",
+    "number": "997324"
+  },
+  "997339": {
+    "name": "Licensing services for the right to use other intellectual property products and other rescources n.e.c",
+    "number": "997339"
+  },
+  "998130": {
+    "name": "Interdisciplinary research and experimental development services.",
+    "number": "998130"
+  },
+  "998223": {
+    "name": "Payroll services",
+    "number": "998223"
+  },
+  "998232": {
+    "name": "Individual tax preparation and planning services",
+    "number": "998232"
+  },
+  "998338": {
+    "name": "Engineering services for other projects n.e.c.",
+    "number": "998338"
+  },
+  "998342": {
+    "name": "Subsurface surveying services",
+    "number": "998342"
+  },
+  "998343": {
+    "name": "Mineral exploration and evaluation",
+    "number": "998343"
+  },
+  "998348": {
+    "name": "Certification and authentication of works of art",
+    "number": "998348"
+  },
+  "998351": {
+    "name": "Veterinary services for pet animals",
+    "number": "998351"
+  },
+  "998365": {
+    "name": "Sale of Internet advertising space",
+    "number": "998365"
+  },
+  "998366": {
+    "name": "Sale of other advertising space or time (except on commission)",
+    "number": "998366"
+  },
+  "998387": {
+    "name": "Other Photography & Videography and their processing services n.e.c.",
+    "number": "998387"
+  },
+  "998395": {
+    "name": "Translation and interpretation services",
+    "number": "998395"
+  },
+  "998415": {
+    "name": "Data transmission services",
+    "number": "998415"
+  },
+  "998424": {
+    "name": "Audio conferencing and video conferencing over the Internet",
+    "number": "998424"
+  },
+  "998429": {
+    "name": "Other Internet telecommunications services n.e.c.",
+    "number": "998429"
+  },
+  "998514": {
+    "name": "Temporary staffing services",
+    "number": "998514"
+  },
+  "998523": {
+    "name": "Security systems services",
+    "number": "998523"
+  },
+  "998525": {
+    "name": "Guard services",
+    "number": "998525"
+  },
+  "998541": {
+    "name": "Parcel packing and gift wrapping",
+    "number": "998541"
+  },
+  "998549": {
+    "name": "Other packaging services n.e.c",
+    "number": "998549"
+  },
+  "998612": {
+    "name": "Animal husbandry services",
+    "number": "998612"
+  },
+  "998632": {
+    "name": "Support services to gas distribution",
+    "number": "998632"
+  },
+  "998634": {
+    "name": "Support services to Distribution services of steam, hot water and air-conditioning supply",
+    "number": "998634"
+  },
+  "998712": {
+    "name": "Maintenance and repair services of office and accounting machinery",
+    "number": "998712"
+  },
+  "998717": {
+    "name": "Maintenance and repair services of commercial and industrial machinery.",
+    "number": "998717"
+  },
+  "998731": {
+    "name": "Installation services of fabricated metal products, except machinery and equipment.",
+    "number": "998731"
+  },
+  "998734": {
+    "name": "Installation services of radio, television and communications equipment and apparatus.",
+    "number": "998734"
+  },
+  "998811": {
+    "name": "Meat processing services",
+    "number": "998811"
+  },
+  "998812": {
+    "name": "Fish processing services",
+    "number": "998812"
+  },
+  "998815": {
+    "name": "Dairy product manufacturing services",
+    "number": "998815"
+  },
+  "998832": {
+    "name": "Paper and paper product manufacturing services",
+    "number": "998832"
+  },
+  "998841": {
+    "name": "Coke and refined petroleum product manufacturing services",
+    "number": "998841"
+  },
+  "998853": {
+    "name": "Other non-metallic mineral product manufacturing services",
+    "number": "998853"
+  },
+  "998860": {
+    "name": "Basic metal manufacturing services",
+    "number": "998860"
+  },
+  "998871": {
+    "name": "Structural metal product, tank, reservoir and steam generator manufacturing services",
+    "number": "998871"
+  },
+  "998897": {
+    "name": "Medical and dental instrument and supply manufacturing services",
+    "number": "998897"
+  },
+  "998911": {
+    "name": "Publishing, on a fee or contract basis",
+    "number": "998911"
+  },
+  "998931": {
+    "name": "Iron and steel casting services",
+    "number": "998931"
+  },
+  "999111": {
+    "name": "Overall Government public services",
+    "number": "999111"
+  },
+  "999121": {
+    "name": "Public administrative services related to external affairs, diplomatic and consular services abroad.",
+    "number": "999121"
+  },
+  "999124": {
+    "name": "Military defence services",
+    "number": "999124"
+  },
+  "999128": {
+    "name": "Administrative services related to the detention or rehabilitation of criminals.",
+    "number": "999128"
+  },
+  "999232": {
+    "name": "Secondary education services, technical and vocational.",
+    "number": "999232"
+  },
+  "999299": {
+    "name": "Other Educational support services",
+    "number": "999299"
+  },
+  "999322": {
+    "name": "Residential care services for the elderly and persons with disabilities",
+    "number": "999322"
+  },
+  "999411": {
+    "name": "Sewerage and sewage treatment services",
+    "number": "999411"
+  },
+  "999431": {
+    "name": "Waste preparation, consolidation and storage services",
+    "number": "999431"
+  },
+  "999459": {
+    "name": "Other sanitation services n.e.c.",
+    "number": "999459"
+  },
+  "999511": {
+    "name": "Services furnished by business and employers organizations",
+    "number": "999511"
+  },
+  "999592": {
+    "name": "Services furnished by political organizations",
+    "number": "999592"
+  },
+  "999614": {
+    "name": "Motion picture, videotape and television programme distribution services",
+    "number": "999614"
+  },
+  "999621": {
+    "name": "Performing arts event promotion and organization services",
+    "number": "999621"
+  },
+  "999629": {
+    "name": "Other performing arts and live entertainment services n.e.c.",
+    "number": "999629"
+  },
+  "999641": {
+    "name": "Museum and preservation services of historical sites and buildings",
+    "number": "999641"
+  },
+  "999661": {
+    "name": "Services of athletes",
+    "number": "999661"
+  },
+  "999694": {
+    "name": "Lottery services",
+    "number": "999694"
+  },
+  "999714": {
+    "name": "Pressing services",
+    "number": "999714"
+  },
+  "999715": {
+    "name": "Dyeing and colouring services",
+    "number": "999715"
+  },
+  "999731": {
+    "name": "Cemeteries and cremation services",
+    "number": "999731"
+  }
+}

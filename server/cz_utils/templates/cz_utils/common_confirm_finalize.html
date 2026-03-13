@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+{% load heurtey_utils_extras %}
+
+{% block title %}{{ view.cz_page_title }}{% endblock %}
+
+{% block record_acccess %}<!-- No recording breadcrumb -->{% endblock %}
+
+{% block content %}
+<h3> Finalize {{ view.model|verbose_name }} </h3>
+
+<div class="alert alert-info">
+    Are you sure you want to finalize <strong>{{ object }}</strong>?
+</div>
+
+<div class="{% if form and view.form_helper %}well{% endif %}">
+    <form style="display: inline;" action="" method="post">
+        {% if form and view.form_helper %}
+            {% crispy form view.form_helper %}
+        {% else %}
+            {% csrf_token %}
+        {% endif %}
+        <button type="submit" class="btn btn-danger"> Yes, Finalize {{ view.model|verbose_name }}</button>
+    </form>&nbsp;<a href="{{ view.cz_back_button_url }}" class="btn btn-info">No, go back</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+<!-- Help articles -->
+{% load i18n %}
+{% if help_articles %}
+<div class="row">
+    <div class="mt-3 col-sm-12">
+        <h5 class="text-center"> {% trans "Need help with this page?" %} {% trans "Please read these help articles." %} </h5>
+        <ul>
+            {% for ha in help_articles %}
+                <li>
+                    <a href="{{ ha.url }}" target="_blank">{{ ha.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<hr />
+{% endif %}

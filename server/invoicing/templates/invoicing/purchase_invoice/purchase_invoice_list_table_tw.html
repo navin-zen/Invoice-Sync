@@ -1,0 +1,44 @@
+{% load cloudzen_extras %}
+{% cz_var_exists purchasinvoicing_list %}
+<div class="relative w-full">
+    <table class="w-full text-sm caption-bottom">
+        <thead class="[&_tr]:border-b">
+            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <th class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center tight-fit"> <i class="fa fa-info-circle"></i></th>
+                <th class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center tight-fit">Type</th>
+                <th class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">Doc. Number</th>
+                <th class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">Doc. Date</th>
+                <th class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">Supplier</th>
+                <th class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">Status</th>
+            </tr>
+        </thead>
+        <tbody class="[&_tr:last-child]:border-0">
+            {% for o in purchasinvoicing_list %}
+                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">
+                        {% if o.purchase_status == o.PIS_UPLOADED %}
+                            <i class="fa fa-check-circle-o text-green-600"></i>
+                        {% elif o.purchase_status == o.PIS_ERROR %}
+                            <i class="fa fa-minus-circle text-red-600"></i>
+                        {% else %}
+                            <i class="fa fa-dot-circle-o text-yellow-600"></i>
+                        {% endif %}
+                    </td>
+                    <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">{{ o.get_doctype_display }}</td>
+                    <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">
+                        <a class="text-primary hover:underline" href="{{ o.get_absolute_url }}">{{ o.number }}</a>
+                    </td>
+                    <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">{{ o.date|date:"d-M-Y" }}</td>
+                    <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center">{{ o.ctin }}</td>
+                    <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center {% if o.purchase_status == o.PIS_UPLOADED %}text-green-600{% elif o.purchase_status == o.PIS_ERROR %}text-red-500{% endif %}">{{ o.status_message }}</td>
+                </tr>
+            {% empty %}
+                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <td class="p-6 text-muted-foreground align-middle text-center [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]" colspan="1000">
+                        No Invoices found
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

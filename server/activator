@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+ROOT_DIR=$(readlink -f $(dirname $0))
+
+export UV_CACHE_DIR=$HOME/.cache/uv
+
+export UV_PROJECT_ENVIRONMENT="${ROOT_DIR}/.venv"
+export VIRTUAL_ENV="${UV_PROJECT_ENVIRONMENT}"
+
+export PYTHONPATH="${ROOT_DIR}"
+export PATH="${VIRTUAL_ENV}/bin:${PATH}"
+
+export PYTHONDONTWRITEBYTECODE="1"
+
+# uv
+export PATH="$HOME/.cargo/bin:$PATH"
+
+export LANG=en_US.UTF-8
+
+export LD_LIBRARY_PATH=${ROOT_DIR}/instantclient_19_8/:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${ROOT_DIR}/instantclient_19_9/:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${ROOT_DIR}/instantclient_21_1/:${LD_LIBRARY_PATH}
+
+"$@"

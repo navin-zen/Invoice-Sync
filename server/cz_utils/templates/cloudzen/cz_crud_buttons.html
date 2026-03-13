@@ -1,0 +1,31 @@
+{# Parameters are obj, which, and new_window #}
+{% if 'R' in which %}
+    <a href="{{ obj.get_absolute_url }}"
+        {% if new_window %}target="_blank"{% endif %}
+        class="mr-1 btn btn-sm btn-info"
+        >View</a>
+{% endif %}
+{% if 'P' in which %}
+    <a href="{{ obj.get_pdf_url }}"
+        {% if new_window %}target="_blank"{% endif %}
+        class="mr-1 btn btn-sm btn-info"
+        >PDF</a>
+{% endif %}
+{% if 'U' in which %}
+    <a href="{{ obj.get_update_url }}"
+        {% if new_window %}target="_blank"{% endif %}
+        class="mr-1 btn btn-sm btn-primary"
+        >Edit</a>
+{% endif %}
+{% if 'F' in which %}
+    <a href="{{ obj.get_finalize_url }}"
+        {% if new_window %}target="_blank"{% endif %}
+        class="mr-1 btn btn-sm btn-primary"
+        >Finalize</a>
+{% endif %}
+{% if 'D' in which %}
+    <a href="{{ obj.get_delete_url }}"
+        {% if new_window %}target="_blank"{% endif %}
+        class="mr-1 btn btn-sm btn-danger"
+        >Delete<i class="ml-2 fa fa-times" aria-hidden="true"></i></a>
+{% endif %}

@@ -1,0 +1,24 @@
+{% load account %}{% user_display user as user_display %}{% load i18n %}{% autoescape off %}{% with site_name=current_site.name site_domain=current_site.domain %}Hello {{ user_display }}!
+
+Thank you for signing up for {{ site_name }}. We are very
+privileged to have you on board.
+
+To get started using {{ site_name }}, please confirm your
+account and E-mail by clicking the following link:
+{{ activate_url }}
+
+For your reference, here are your account details:
+
+Website: https://{{ site_domain }}
+E-mail: {{ user.email }}
+
+Thank you so much!
+Suriya Subramanian (CEO) and the {{ site_name }} Team
+
+P.S If you have any questions at all, you may reach us in the following ways.
+
+1) Click the "Need Help?" button that is present in each page of {{ site_name }}
+2) Sending an email to support@gstzen.in
+3) Calling us at +91 7406 441122
+
+{% endwith %}{% endautoescape %}

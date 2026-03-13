@@ -1,0 +1,47 @@
+{% load crispy_forms_filters %}
+{% load l10n %}
+
+<div
+    class="container p-6 cz-radio-image-container {{ field_class }}"
+    {% if flat_attrs %}
+        {{ flat_attrs|safe }}
+    {% endif %}
+>
+    {% include 'bootstrap4/layout/field_errors_block.html' %}
+
+    {% for choice in field.field.choices %}
+        {% if not inline_class %}
+            <div class="radio">
+        {% endif %}
+        <input
+            type="radio"
+            name="{{ field.html_name }}"
+            id="id_{{ field.html_name }}_{{ forloop.counter }}"
+            value="{{ choice.0|unlocalize }}"
+            {{ field.field.widget.attrs|flatatt }}
+            {% if choice.0|stringformat:'s' == field.value|stringformat:'s' %}
+                checked="checked"
+            {% endif %}
+            {% if field.field.required %}
+                required
+            {% endif %}
+        />
+        <label
+            class="{% if inline_class %}radio-{{ inline_class }}{% endif %}file-label sl-invoice-image"
+            for="id_{{ field.html_name }}_{{ forloop.counter }}"
+        >
+        </label>
+        <div class="d-flex justify-content-center">
+            <p
+                class="pt-0 mt-0 text-center text-wrap small"
+                style="max-width: 200px"
+            >
+                {{ choice.1|unlocalize|safe }}
+            </p>
+        </div>
+        {% if not inline_class %}
+    </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% include 'bootstrap4/layout/help_text.html' %}

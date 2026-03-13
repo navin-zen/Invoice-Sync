@@ -1,0 +1,12 @@
+{# Full template of the DataSourceChoices view #}
+{% extends "base.html" %}
+{% load cloudzen_extras %}
+
+{% block content %}
+<div class="card">
+    <div class="card-block">
+        {% include "invoicing/settings/datasource-choices-only.html" %}
+    </div>
+</div>
+{% endblock content %}
+

@@ -1,0 +1,313 @@
+{% load humanize %}
+{% load cloudzen_extras %}
+{% cz_var_exists invoicing %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <style type="text/css">
+            body {
+                // background: rgb(204,204,204);
+            }
+            table {
+                color: black;
+            }
+            .page {
+                 background: white;
+                 display: block;
+                 margin: 0 auto;
+                 margin-bottom: 0.5cm;
+            }
+            page[size="A4"] {
+                width: 21cm;
+                height: 29.7cm;
+            }
+            .object-fit_contain {
+                object-fit: contain;
+            }
+            @media print {
+                body, page {
+                margin: auto;
+                }
+                table {page-break-inside:auto }
+                tr { page-break-inside:avoid; page-break-after:auto }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page">
+            <div class="container-fluid">
+                <div id="logo" class="mt-2 row">
+                    <div class="mt-2 text-left col-sm-4">
+                        <a href="#">{% if logo_url %}<img class="object-fit_contain" src="{{ logo_url }}" alt="Logo" width="200" height="70">{% endif %}</a>
+                    </div>
+                    <div class="mt-2 text-center col-sm-4">
+                        <h3 class="font-weight-bold">
+                            {% if invoicing.DocDtls.Typ == "INV" %}
+                                Tax Invoice
+                            {% elif invoicing.DocDtls.Typ == "DBN" %}
+                                Debit Note
+                            {% elif invoicing.DocDtls.Typ == "CRN" %}
+                                Credit Note
+                            {% endif %}
+                        </h3>
+                    </div>
+                </div>
+
+                <table style="table-layout: fixed;" class="table mt-3 mb-2 table-bordered">
+                    <tbody>
+                        {% if invoicing.Irn %}
+                            <tr>
+                                <td colspan="3">
+                                    <strong>Doc Identifier</strong>: {{ invoicing.Irn }}
+                                    &nbsp; &nbsp; &nbsp;
+                                    <strong>Ack. No & Date</strong>: {{ invoicing.AckNo }} {{ invoicing.AckDt }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if invoicing.EwbNo %}
+                            <tr>
+                                <td colspan="3">
+                                    <strong>EWB No</strong>: {{ invoicing.EwbNo }}
+                                    &nbsp; &nbsp; &nbsp;
+                                    <strong>EWB Date</strong>: {{ invoicing.EwbDt }}
+                                    &nbsp; &nbsp; &nbsp;
+                                    <strong>Valid Till</strong>: {{ invoicing.EwbValidTill }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td class="pb-0">
+                                <span class="font-weight-bold">Seller Details</span>
+                                {% include "invoicing/htmldisplay/invoicing/address_information.html" with address=invoicing.SellerDtls %}
+                            </td>
+                            <td class="pb-0">
+                                <span class="font-weight-bold">Details of Invoice</span>
+                                {% include "invoicing/htmldisplay/invoicing/invoice_information.html" with invoicing=invoicing invoice=invoicing.DocDtls reverse_charge=invoicing.TranDtls total=invoicing.ValDtls %}
+                            </td>
+                            <td class="py-2">
+                                {% if qrcode %}
+                                    <img width="200mm" src="{{qrcode}}" />
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="pb-0">
+                                <span class="font-weight-bold">Buyer Details (Bill To)</span>
+                                {% include "invoicing/htmldisplay/invoicing/address_information.html" with address=invoicing.BuyerDtls %}
+                            </td>
+                            <td class="pb-0">
+                                <span class="font-weight-bold">Ship to Address</span>
+                                {% if invoicing.ShipDtls %}
+                                    {% include "invoicing/htmldisplay/invoicing/address_information.html" with address=invoicing.ShipDtls %}
+                                {% else %}
+                                    <br/> (Same as Bill To address)
+                                {% endif %}
+                            </td>
+                            <td class="pb-0">
+                                <span class="font-weight-bold">Dispatch From Address</span>
+                                {% if invoicing.DispDtls %}
+                                    {% include "invoicing/htmldisplay/invoicing/address_information.html" with address=invoicing.DispDtls %}
+                                {% else %}
+                                    <br/> (Same as Seller address)
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table my-2 table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-top"style="width:5mm;">SI NO.</th>
+                            <th class="text-left align-top">HSN - Description</th>
+                            <th class="text-center align-top"style="width:7mm">GST Rate</th>
+                            <th class="px-0 text-right align-top">
+                                {% if is_taxval %}
+                                    <span class="float-right pr-1"> Taxable Value</span>
+                                {% endif %}
+                                {% if is_igst %}
+                                    <br /><span class="float-right px-1">IGST</span>
+                                {% endif %}
+                                {% if is_cgst %}
+                                    <br /><span class="float-right px-1"> CGST</span>
+                                {% endif %}
+                                {% if is_sgst %}
+                                    <br /><span class="float-right px-1"> SGST</span>
+                                {% endif %}
+                                {% if has_cess %}
+                                    <br /><span class="float-right px-1"> Cess</span>
+                                {% endif %}
+                                {% if has_othchrg %}
+                                    <br /><span class="float-right px-1">Other Charges</span>
+                                {% endif %}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in invoicing.ItemList %}
+                            <tr>
+                                <td class="py-2 text-center">{{forloop.counter}}</td>
+                                <td class="pl-1 text-left">
+                                    {{item.HsnCd}} - {{item.PrdDesc}}
+                                    {% if item.Qty %}<br /><span class="font-weight-bold">Quantity: </span>{{item.Qty|default:0|floatformat:"-3"|intcomma}}&nbsp;&nbsp;&nbsp;{% endif%}
+                                    {% if item.Unit %}<span class="font-weight-bold">Unit: </span>{{item.Unit}}&nbsp;&nbsp;&nbsp; {% endif%}
+                                    {% if item.UnitPrice %}<span class="font-weight-bold">Unit Price: </span>{{item.UnitPrice|default:0|floatformat:2|intcomma}}&nbsp;&nbsp;&nbsp;{% endif%}
+                                    {% if item.Discount %}<span class="font-weight-bold">Gross Amount: </span>{{item.TotAmt|default:0|floatformat:2|intcomma}}&nbsp;&nbsp;&nbsp;{% endif%}
+                                    {% if item.Discount %}<span class="font-weight-bold">Discount: </span>{{item.Discount|default:0|floatformat:2|intcomma}}&nbsp;&nbsp;&nbsp;{% endif%}
+                                    {% if item.BchDtls %}
+                                        <br />
+                                        <strong>Batch:</strong>
+                                        {{ item.BchDtls.Nm }}
+                                        {% if item.BchDtls.ExpDt %}
+                                            <strong>Expiry Dt:</strong>
+                                            {{ item.BchDtls.ExpDt }}
+                                        {% endif %}
+                                        {% if item.BchDtls.WrDt %}
+                                            <strong>Warranty Dt:</strong>
+                                            {{ item.BchDtls.WrDt }}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if item.AttribDtls %}
+                                        <br />
+                                        {% for attribute in item.AttribDtls %}
+                                            <strong>{{attribute.Nm}}:</strong> {{attribute.Val}}&nbsp;
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                                <td class="py-2 text-center">{{item.GstRt|floatformat:"-3"}}</td>
+                                <td class="py-2 px-0 text-right">
+                                    {% if is_taxval %}
+                                        <span class="float-right px-1">{{item.AssAmt|default:0|floatformat:2|intcomma}}</span>
+                                    {% endif %}
+                                    {% if is_igst %}
+                                        <br /><span class="float-right px-1">{{item.IgstAmt|default:0|floatformat:2|intcomma}}</span>
+                                    {% endif %}
+                                    {% if is_cgst %}
+                                        <br /><span class="float-right px-1">{{item.CgstAmt|default:0|floatformat:2|intcomma}}</span>
+                                    {% endif %}
+                                    {% if is_sgst %}
+                                        <br /><span class="float-right px-1">{{item.SgstAmt|default:0|floatformat:2|intcomma}}</span>
+                                    {% endif %}
+                                    {% if has_cess %}
+                                        <br /><span class="float-right px-1">{{item.CesAmt|default:0|floatformat:2|intcomma}}</span>
+                                    {% endif %}
+                                    {% if has_othchrg %}
+                                        <br /><span class="float-right px-1">{{item.OthChrg|default:0|floatformat:2|intcomma}}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="px-0 text-right" colspan="3">
+                                {% if is_taxval %}
+                                    <span class="float-right px-1 font-weight-bold">Total Taxable Value</span>
+                                {% endif %}
+                                {% if is_igst %}
+                                    <br /><span class="float-right px-1 font-weight-bold">Total IGST</span>
+                                {% endif %}
+                                {% if is_cgst %}
+                                    <br /><span class="float-right px-1 font-weight-bold">Total CGST</span>
+                                {% endif %}
+                                {% if is_sgst %}
+                                    <br /><span class="float-right px-1 font-weight-bold">Total SGST</span>
+                                {% endif %}
+                                {% if has_cess %}
+                                    <br /><span class="float-right px-1 font-weight-bold">Total Cess</span>
+                                {% endif %}
+                                {% if invoicing.ValDtls.Discount %}
+                                    <br /><span class="float-right px-1 font-weight-bold">Discount</span>
+                                {% endif %}
+                                {% if invoicing.ValDtls.OthChrg %}
+                                    <br /><span class="float-right px-1 font-weight-bold">Other Charges</span>
+                                {% endif %}
+                                {% if invoicing.ValDtls.RndOffAmt %}
+                                    <br /><span class="float-right px-1 font-weight-bold">Round Off</span>
+                                {% endif %}
+                                <br /><span class="float-right px-1 font-weight-bold">Total Invoice Value</span>
+                            </td>
+                            <td class="px-0 text-right">
+                                {% if is_taxval %}
+                                   <span class="float-right px-1"> {{invoicing.ValDtls.AssVal|default:0|floatformat:2|intcomma}}</span>
+                                {% endif %}
+                                {% if is_igst %}
+                                    <br /><span class="float-right px-1">{{invoicing.ValDtls.IgstVal|default:0|floatformat:2|intcomma}}</span>
+                                {% endif %}
+                                {% if is_cgst %}
+                                    <br /><span class="float-right px-1">{{invoicing.ValDtls.CgstVal|default:0|floatformat:2|intcomma}}</span>
+                                {% endif %}
+                                {% if is_sgst %}
+                                    <br /><span class="float-right px-1">{{invoicing.ValDtls.SgstVal|default:0|floatformat:2|intcomma}}</span>
+                                {% endif %}
+                                {% if has_cess %}
+                                    <br /><span class="float-right px-1">{{invoicing.ValDtls.CesVal|default:0|floatformat:2|intcomma}}</span>
+                                {% endif %}
+                                {% if invoicing.ValDtls.Discount %}
+                                    <br /><span class="float-right px-1">-{{invoicing.ValDtls.Discount|default:0|floatformat:2|intcomma}}</span>
+                                {% endif %}
+                                {% if invoicing.ValDtls.OthChrg %}
+                                    <br /><span class="float-right px-1">{{invoicing.ValDtls.OthChrg|default:0|floatformat:2|intcomma}}</span>
+                                {% endif %}
+                                {% if invoicing.ValDtls.RndOffAmt %}
+                                    <br /><span class="float-right px-1">{{invoicing.ValDtls.RndOffAmt|default:0|floatformat:2|intcomma}}</span>
+                                {% endif %}
+                                <br /><span class="float-right px-1">{{invoicing.ValDtls.TotInvVal|default:0|floatformat:2|intcomma}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-1 text-right" colspan="4">Invoice
+                                Total amount in words: <strong>{{invoicing.ValDtls.TotInvVal|floatformat:2|num2words}}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                {% if invoicing.AddlDocDtls %}
+                <table class="table my-2 table-bordered" style="page-break-inside:avoid;page-break-before:auto;">
+                     <tr>
+                         <td>
+                             <strong>Additional Information</strong>
+                             {% for i in invoicing.AddlDocDtls %}
+                                 <br />{{ i.Info|linebreaksbr }}
+                             {% endfor %}
+                         </td>
+                     </tr>
+                </table>
+                {% endif %}
+
+                <table class="table my-2 table-bordered" style="page-break-inside:avoid;page-break-before:auto;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                {% if invoicing.PayDtls %}
+                                    <p class="mb-0">
+                                        <strong>Payment related information</strong><br />
+                                        {% if invoicing.PayDtls.Mode %} {{invoicing.PayDtls.Mode}} <br />{% endif %}
+                                        {% if invoicing.PayDtls.Nm %}Account Name: {{invoicing.PayDtls.Nm}} <br />{% endif %}
+                                        {% if invoicing.PayDtls.AccDet %} Account Number : {{invoicing.PayDtls.AccDet}} <br />{% endif %}
+                                        {% if invoicing.PayDtls.FinInsBr %} IFS Code : {{invoicing.PayDtls.FinInsBr}} <br />{% endif %}
+                                        {% if invoicing.PayDtls.PaidAmt %} Amount Paid : {{invoicing.PayDtls.PaidAmt|default:0|floatformat:2|intcomma}}<br />{% endif %}
+                                        {% if invoicing.PayDtls.PaymtDue %}   Payment Due : {{invoicing.PayDtls.PaymtDue|default:0|floatformat:2|intcomma}}<br />{% endif %}
+                                        {% if invoicing.PayDtls.PayTerm %} Payment Terms: {{invoicing.PayDtls.PayTerm}}<br />{% endif %}
+                                    </p>
+                                {% endif %}
+                            </td>
+                            <td class="text-right">
+                                <p>E&OE <br /></p>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <p class="mb-0">
+                                    Authorized Signatory <br />
+                                    {{invoicing.SellerDtls.LglNm}}
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!-- end of container--!>
+        </div>
+    </body>
+</html>

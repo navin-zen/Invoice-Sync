@@ -1,0 +1,43 @@
+{% load cloudzen_extras %}
+{% load i18n %}
+{% cz_var_exists purchasinvoicing_list %}
+<div class="table-responsive">
+    <table class="table mb-0 table-striped table-bordered">
+        <thead class="thead-inverse">
+            <tr>
+                <th class="text-center tight-fit"> <i class="fa fa-info-circle"></i></th>
+                <th class="text-center tight-fit">Type</th>
+                <th class="text-center">Doc. Number</th>
+                <th class="text-center">Doc. Date</th>
+                <th class="text-center">Supplier</th>
+                <th class="text-center">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in purchasinvoicing_list %}
+                <tr>
+                    <td class="text-center">
+                        {% if o.purchase_status == o.PIS_UPLOADED %}
+                            <i class="fa fa-check-circle-o" style="color:#4cae4c"></i>
+                        {% elif o.purchase_status == o.PIS_ERROR %}
+                            <i class="fa fa-minus-circle" style="color:red"></i>
+                        {% else %}
+                            <i class="fa fa-dot-circle-o" style="color:#ffc107"></i>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">{{ o.get_doctype_display }}</td>
+                    <td class="text-center"><a href="{{ o.get_absolute_url }}">{{ o.number }}</a></td>
+                    <td class="text-center">{{ o.date|date:"d-M-Y" }}</td>
+                    <td class="text-center">{{ o.ctin }}</td>
+                    <td class="text-center" {% if o.purchase_status == o.PIS_UPLOADED %}style="color:#4cae4c"{% elif o.purchase_status == o.PIS_ERROR %}style="color:red"{% endif %}>{{ o.status_message }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td class="text-center" colspan="1000">
+                        No Invoices found
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

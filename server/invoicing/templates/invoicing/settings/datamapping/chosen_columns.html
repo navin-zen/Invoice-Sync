@@ -1,0 +1,33 @@
+{# Display of chosen columns in the column mapping #}
+{% load cloudzen_extras %}
+{% cz_var_exists mapping_details_display %}
+{% cz_var_exists view.settings_info %}
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th class="text-center"> Section </th>
+                <th class="text-center"> Field in Schema </th>
+                <th class="text-center"> Data Value </th>
+            </tr>
+        </thead>
+        {% for field in mapping_details_display %}
+            <tr>
+                <td> {{ field.section }} </td>
+                <td> {{ field.name }} </td>
+                <td>
+                    {% if view.settings_info.metadata.datasource.type == "file:excel" and field.source.type == "column" %}
+                        <span class="text-muted">Excel Column</span> {{ field.source.column }}
+                    {% elif view.settings_info.metadata.datasource.type == "file:excel" and field.source.type == "constant" %}
+                        <span class="text-muted">Value</span> {{ field.source.value }}
+                    {% elif view.settings_info.metadata.datasource.type != "file:excel" and field.source.type == "column" %}
+                        <span class="text-muted">DB Column</span> {{ field.source.column }}
+                    {% elif view.settings_info.metadata.datasource.type != "file:excel" and field.source.type == "constant" %}
+                        <span class="text-muted">Value</span> {{ field.source.value }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+

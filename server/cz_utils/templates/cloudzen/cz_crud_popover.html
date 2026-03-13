@@ -1,0 +1,17 @@
+<button
+  rel="popover"
+  type="button"
+  class="btn btn-sm btn-info"
+  {% if placement %}
+    data-placement="{{ placement }}"
+  {% endif %}
+  data-toggle="popover"
+  title="Actions"
+  data-html="true"
+  data-trigger="focus"
+  data-content='
+    {% include 'cloudzen/cz_crud_buttons.html' with obj=obj which=which new_window=new_window %}
+  '
+>
+  <i class="fa fa-cog"></i>
+</button>

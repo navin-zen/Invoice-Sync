@@ -1,0 +1,67 @@
+{% load cloudzen_extras %}
+{% cz_var_exists datasource %}
+
+<table class="table table-sm table-bordered table-striped">
+    <thead class="thead-inverse">
+        {% if datasource.type == 'file:excel' %}
+        <tr>
+            <th>Path to the excel file</th>
+        </tr>
+        <tr>
+            <td>{{datasource.config.path}}</td>
+        </tr>
+        {% elif datasource.type == 'file:csv' %}
+        <tr>
+            <th>Path to the csv file</th>
+        </tr>
+        <tr>
+            <td>{{datasource.config.path}}</td>
+        </tr>
+        {% endif %}
+    </thead>
+</table>
+<table class="table table-sm table-bordered table-striped">
+    <thead class="thead-inverse">
+        {% if datasource.type != 'file:excel' and datasource.type != 'file:csv' %}
+            <tr>
+                <th> Parameter </th>
+                <th> Value </th>
+            </tr>
+            {% if hide_backend_driver %}
+                <tr>
+                    <td>Database Driver</td>
+                    <td>{{ datasource.config.backend_driver }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+        {% if datasource.type != 'file:excel' and datasource.type != 'file:csv' %}
+            <tr>
+                <td>Hostname</td>
+                <td>{{ datasource.config.hostname }}</td>
+            </tr>
+            <tr>
+                <td>Port</td>
+                <td>{{ datasource.config.port }}</td>
+            </tr>
+            <tr>
+                <td>Database Name</td>
+                <td>{{ datasource.config.database }}</td>
+            </tr>
+            <tr>
+                <td>Username</td>
+                <td>{{ datasource.config.username }}</td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td>********</td>
+            </tr>
+        {% endif %}
+        {% comment %}
+        <tr>
+            <td>Last Configured Time</td>
+            <td>{{ datasource.status.timestamp }}</td>
+        </tr>
+        {% endcomment %}
+    </thead>
+</table>
+

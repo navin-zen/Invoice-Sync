@@ -1,0 +1,18 @@
+{% if page.has_previous or page.has_next %}
+<nav aria-label="Next / Previous pages navigation">
+  <ul class="pagination justify-content-end">
+      <li class="mr-3 page-item {% if not page.has_previous %}disabled{% endif %}">
+        <a class="page-link" href="{% if page and page.has_previous %}{{ prev_page_url }}{% else %}#{% endif %}">
+            <i class="mr-1 fa fa-arrow-left" aria-hidden="true"></i>
+            Previous Page
+        </a>
+      </li>
+      <li class="page-item {% if not page.has_next %}disabled{% endif %}">
+        <a class="page-link" href="{% if page and page.has_next %}{{ next_page_url }}{% else %}#{% endif %}">
+            Next Page&nbsp;
+            <i class="mr-1 fa fa-arrow-right" aria-hidden="true"></i>
+        </a>
+    </li>
+  </ul>
+</nav>
+{% endif %}

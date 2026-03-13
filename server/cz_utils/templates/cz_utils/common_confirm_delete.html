@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load bootstrap4 %}
+{% load cloudzen_extras %}
+
+{% block title %}
+{{ view.cz_page_title }}
+{% endblock %}
+
+{% block content %}
+{% cz_var_exists view.go_back_url %}
+
+<h2> Delete {{ view.model|verbose_name }} </h2>
+
+{% if cz_got_protected_error %}
+    <div class="alert alert-danger">
+        You will not be able to delete {{ view.model|verbose_name }} object
+        {{ object }}. <br />
+        It is used by other objects.
+        <a href="{{ object.get_absolute_url }}"><button class="btn btn-primary">Go back</button></a>
+    </div>
+{% else %}
+
+    <p>
+        Delete <strong>{{ object }}</strong>?<br /> Are you sure?
+    </p>
+    <form style="display: inline;" action="" method="post">{% csrf_token %}
+        <button type="submit" class="btn btn-danger"> Yes, Delete {{ view.model|verbose_name }}</button>
+    </form><a href="{{ view.go_back_url }}"><button class="btn btn-info">No, go back</button></a>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% load cloudzen_extras %}
+{% cz_var_exists datasource %}
+
+<table class="table table-sm table-bordered table-striped">
+    <thead class="thead-inverse">
+        {% if datasource.type == 'odbc' %}
+        <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>DSN</td>
+            <td>{{datasource.config.dsn}}</td>
+        </tr>
+        <tr>
+            <td>Hostname</td>
+            <td>{{datasource.config.hostname}}</td>
+        </tr>
+        {% endif %}
+    </thead>
+</table>
+

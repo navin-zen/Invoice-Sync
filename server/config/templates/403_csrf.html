@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Security Cookie Verification Error
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block content %}
+<div class="text-center alert alert-danger">
+    <p class=""><i class="fa fa-question" style="font-size: 10em;"></i></p>
+    <p class="display-4">Have you disabled cookies in your web browser?</p>
+    <p class="lead">
+    A cookie is required for security reasons. It looks like you have
+    disabled cookies in your browser or have pressed the back button.
+    Please enable cookies and try again.
+    <br/>
+    Please visit the <a href="/">GSTZen home page</a>.
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% comment %}
+    An email that is sent to the user when a deferred view's response is
+    available. This email contains a link to the rendered content.
+
+    Parameters to this template are:
+        content_url - The url that contains the rendered content.
+{% endcomment %}Dear User,
+
+You are receiving this email because you requested a file download in
+GSTZen.
+
+The file you requested is available for download at the following URL:
+{{ content_url|safe }}
+
+Thank you!
+GSTZen Support
+https://www.gstzen.in
+{% comment %}
+    vim: ft=htmldjango
+{% endcomment %}

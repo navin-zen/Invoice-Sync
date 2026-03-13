@@ -1,0 +1,11 @@
+{% load cloudzen_extras %}
+<p class="mb-0">
+    <span class="font-weight-bold">{% if address.TrdNm %}{{address.TrdNm}}{% else %}{{address.LglNm}}{% endif %}</span><br />
+    {% if address.Bno %}{{address.Bno}}, {% endif %} {% if address.Bnm %} {{address.Bnm}}, {% endif %} <br />
+    {% if address.Flno %}{{address.Flno}}, {% endif %} {% if address.Loc %} {{address.Loc}}, {% endif %} <br />
+    {% if address.Dst %}{{address.Dst}}, {% endif %} {% if address.Stcd %} {{address.Stcd}}, {% endif %} <br />
+    {% if address.Pin %}PIN: {{address.Pin}}{% endif %} <br />
+    {% if address.Ph %}Phone: {{address.Ph}}{% endif %} <br />
+    {% if address.Em %}Email: {{address.Em}}{% endif %} <br />
+    {% if address.Gstin %}GSTIN: <strong>{{address.Gstin}}</strong>{% endif %}
+</p>

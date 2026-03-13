@@ -1,0 +1,98 @@
+{% load cloudzen_extras %}
+{% load i18n %}
+
+<nav
+    class="flex sticky top-0 z-50 flex-row items-center px-4 w-full h-12 border-b border-border/40 bg-secondary/95 backdrop-blur-sm supports-backdrop-filter:bg-brand-blue-100/60"
+>
+    <div class="flex flex-row items-center space-x-2 w-full text-sm font-medium align-middle">
+        <a class="mr-3 font-serif text-3xl font-normal text-stone-800" href="/"> GSTZen </a>
+        <button
+            id="MasterData"
+            data-dropdown-toggle="dropdown"
+            data-dropdown-offset-distance="0"
+            data-dropdown-offset-skidding="30"
+            class="inline-flex justify-center items-center h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors hover:underline focus-visible:ring-1 underline-offset-4 focus-visible:outline-hidden focus-visible:ring-ring"
+            type="button"
+        >
+            {% trans "Master Data" %}
+            <svg
+                class="w-2.5 h-2.5 ms-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+            >
+                <path
+                    stroke="currentColor"
+                    class="ml-auto w-4 h-4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 4 4 4-4"
+                />
+            </svg>
+        </button>
+
+        <div
+            id="dropdown"
+            class="hidden z-10 w-44 bg-white rounded-lg divide-y divide-gray-100 shadow-sm"
+        >
+            <ul class="text-sm text-gray-700" aria-labelledby="MasterData">
+                <li class="dropdown-item">
+                    <a
+                        class="block py-2 px-4 hover:bg-gray-100"
+                        target="_blank"
+                        href="https://my.gstzen.in/m/hsn-sac-codes/"
+                        >{% trans "HSN/SAC Codes" %}</a
+                    >
+                </li>
+                <li class="dropdown-item">
+                    <a
+                        class="block py-2 px-4 hover:bg-gray-100"
+                        target="_blank"
+                        href="https://my.gstzen.in/m/country-codes/"
+                        >{% trans "Countries" %}</a
+                    >
+                </li>
+                <li class="dropdown-item">
+                    <a
+                        class="block py-2 px-4 hover:bg-gray-100"
+                        target="_blank"
+                        href="https://my.gstzen.in/m/state-codes/"
+                        >{% trans "States" %}</a
+                    >
+                </li>
+                <li class="dropdown-item">
+                    <a
+                        class="block py-2 px-4 hover:bg-gray-100"
+                        target="_blank"
+                        href="https://my.gstzen.in/m/port-codes/"
+                        >{% trans "Port Codes" %}</a
+                    >
+                </li>
+                <li class="dropdown-item">
+                    <a
+                        class="block py-2 px-4 hover:bg-gray-100"
+                        target="_blank"
+                        href="https://my.gstzen.in/m/units/"
+                        >{% trans "Units" %}</a
+                    >
+                </li>
+            </ul>
+        </div>
+        <a
+            class="inline-flex justify-center items-center py-2 px-4 h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors hover:underline focus-visible:ring-1 underline-offset-4 focus-visible:outline-hidden focus-visible:ring-ring"
+            target="_blank"
+            href="https://my.gstzen.in/p/"
+        >
+            {% trans "Useful Tools" %}
+        </a>
+        <span class="w-full"></span>
+        <a
+            class="inline-flex justify-center items-center py-2 px-4 h-9 text-sm font-medium whitespace-nowrap rounded-md transition-colors hover:underline focus-visible:ring-1 underline-offset-4 focus-visible:outline-hidden focus-visible:ring-ring"
+            href="{% url 'invoicing:configuration_list' %}"
+        >
+            <i class="mr-2 ph-fill ph-wrench"></i>Settings
+        </a>
+    </div>
+</nav>

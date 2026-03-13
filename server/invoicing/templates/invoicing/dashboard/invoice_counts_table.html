@@ -1,0 +1,75 @@
+{% load cloudzen_extras %}
+{% cz_var_exists invoice_count_details_list %}
+
+<div class="relative w-full">
+    <table class="w-full text-sm caption-bottom">
+        <thead class="[&_tr]:border-b">
+            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <th
+                    class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center"
+                >
+                    Time Period
+                </th>
+                <th
+                    class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center"
+                >
+                    Uploaded
+                </th>
+                <th
+                    class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center"
+                >
+                    Pending
+                </th>
+                <th
+                    class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center"
+                >
+                    Error
+                </th>
+                <th
+                    class="h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-center"
+                >
+                    Total
+                </th>
+            </tr>
+        </thead>
+        <tbody class="[&_tr:last-child]:border-0">
+            {% for o in invoice_count_details_list %}
+            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <td
+                    class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]{% if not o.start_date %} font-semibold{% endif %}"
+                >
+                    {{ o.label }}
+                    {% if o.start_date %}
+                        {% if o.start_date == o.end_date %}
+                            ({{ o.start_date|date:"j F" }})
+                        {% else %}
+                            ({{ o.start_date|date:"j M" }} - {{ o.end_date|date:"j M, Y" }})
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td
+                    class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right"
+                >
+                    {{ o.uploaded }}
+                </td>
+                <td
+                    class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right"
+                >
+                    {{ o.pending }}
+                </td>
+                <td
+                    class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right"
+                >
+                    {{ o.error }}
+                </td>
+                <td
+                    class="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right"
+                >
+                    {{ o.total }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+

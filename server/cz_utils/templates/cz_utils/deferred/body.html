@@ -1,0 +1,27 @@
+{% load cloudzen_extras %}
+
+<html>
+
+<body>
+
+<p>
+Dear Sir/Madam,
+</p>
+
+<p>
+You are receiving this email because you requested a file download in
+GSTZen.
+</p>
+
+The file you requested is available for download at the following URL:
+<a href="{{ content_url }}" style="display:block; background-color:{{ button_color }}; border-radius:5px; color:white; text-align:center; width:150px; height:50px; vertical-align:middle; padding-top:10px"> Download <br />{{ file_desc }}</a>
+
+<p>
+Thank you! <br/>
+GSTZen Team <br />
+<a href="https://www.gstzen.in">https://www.gstzen.in</a><br/>
+</p>
+
+</body>
+
+</html>

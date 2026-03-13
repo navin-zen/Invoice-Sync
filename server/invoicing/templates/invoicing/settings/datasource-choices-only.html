@@ -1,0 +1,36 @@
+{# Template that shows list of datasources #}
+{% load cloudzen_extras %}
+<div>
+    <h4> Choose your Data Source </h4>
+    <div>
+        <label>Excel Integration</label><br />
+        <a class="btn btn-primary" href="{% url "invoicing:excel_import" configuration.uuid %}">Excel</a>
+    </div>
+    <br />
+    <div>
+        <label>CSV Integration</label><br />
+        <a class="btn btn-primary" href="{% url "invoicing:csv_import" configuration.uuid %}">CSV</a>
+    </div>
+    <br />
+    <div>
+        <label>ODBC Integration</label><br />
+        <a class="btn btn-primary" href="{% url "invoicing:configure_odbc" %}">ODBC</a>
+    </div>
+    <br />
+    <div>
+        <label>ERP Integration</label><br />
+        <a class="btn btn-primary" href="">Tally</a>
+        <a class="btn btn-primary" href="{% url "invoicing:oracle_ebs_import" configuration.uuid %}">Oracle E-Business Suite</a>
+        <a class="btn btn-primary" href="">SAP</a>
+        <a class="btn btn-primary" href="{% url "invoicing:configure_microsoft_dynamics_navision" configuration.uuid %}">Microsoft Dynamics</a>
+    </div>
+    <br />
+    <div>
+        <label>Database Integration</label><br />
+        <a class="btn btn-primary" href="{% url "invoicing:configure_microsoft_sql_server" configuration.uuid %}">Microsoft SQL Server</a>
+        <a class="btn btn-primary" href="{% url "invoicing:configure_oracle" configuration.uuid %}">Oracle Database</a>
+        <a class="btn btn-primary" href="{% url "invoicing:configure_postgresql" configuration.uuid %}">PostgreSQL</a>
+        <a class="btn btn-primary" href="{% url "invoicing:configure_my_sql" configuration.uuid %}">MySQL</a>
+    </div>
+</div>
+

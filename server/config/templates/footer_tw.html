@@ -1,0 +1,65 @@
+{% load cloudzen_extras %}
+{% load i18n %}
+
+<div class="inline-block pb-8 mt-4 w-full font-sans align-top border-t bg-secondary text-slate-600">
+    <div class="container pt-3 mt-3">
+        <div class="grid grid-cols-12">
+            <div class="col-span-12 md:col-span-6"></div>
+            <div class="col-span-12 mt-2 mr-2 md:col-span-3 md:mt-0">
+                <a
+                    class="text-2xl font-bold text-left text-slate-700"
+                    target="_blank"
+                    href="https://www.gstzen.in/pages/resources.html"
+                    >{% trans "Resources" %}</a
+                >
+                <ul class="mt-2 list-unstyled">
+                    <li>
+                        <a
+                            href="https://www.gstzen.in/a/the-central-goods-and-services-act-2017.html"
+                            target="_blank"
+                            >CGST Act</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://www.gstzen.in/a/the-integrated-goods-and-services-act-2017.html"
+                            target="_blank"
+                            >IGST Act</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://www.gstzen.in/a/the-union-territory-goods-and-services-tax-act-2017.html"
+                            target="_blank"
+                            >UTGST Act</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://www.gstzen.in/a/the-goods-and-services-tax-compensation-to-states-act-2017.html"
+                            target="_blank"
+                            >GST Comp. Act</a
+                        >
+                    </li>
+                </ul>
+            </div>
+            <div class="col-span-12 mt-2 md:col-span-3 md:mt-0">
+                <h4 class="text-2xl font-bold text-left text-slate-700">{% trans "Contact Us" %}</h4>
+                <ul class="mt-2 list-unstyled">
+                    <li class="flex items-center space-x-1">
+                        <i class="text-lg ph-fill ph-envelope"></i>
+                        <a href="mailto:support@gstzen.in">support@gstzen.in</a>
+                    </li>
+                    {% if not hide_phone %}
+                    <li class="flex items-center space-x-1">
+                        <i class="text-lg ph-fill ph-phone"></i>
+                        <a href="tel:+91-7406-441122">+91 7406 441122</a>
+                    </li>
+                    {% else %}
+                    <!-- Not showing phone number on this page -->
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

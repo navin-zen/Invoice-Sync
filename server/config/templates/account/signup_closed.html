@@ -1,0 +1,29 @@
+{% extends "account/base.html" %}
+
+{# This template is not used any more #}
+
+{% load i18n %}
+{% load cloudzen_extras %}
+
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block head_title %}{% trans "Sign Up is by invitation only" %}{% endblock %}
+
+{% block content %}
+{% cz_var_exists view.user_list %}
+
+<div class="card">
+    <div class="card-block">
+        <h1 class="text-center">{{ request.tenant.account_name }}</h1>
+        <h2 class="text-muted">Sign up is by invitation only</h1>
+
+        <p>You are trying to sign up as a user in GSTZen's portal for {{ request.tenant.account_name }}. Please contact one of the following users for an invitation:
+        </p>
+        <ul>
+        {% for user in view.user_list %}
+            <li> {{ user|cz_user }} </li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{# Needs parameters 'object_list', 'form', 'object_list_template' #}
+{% extends 'base.html' %}
+
+{% load bootstrap4 %}
+{% load humanize %}
+
+{% block title %}
+    Delete multiple entries
+{% endblock %}
+
+{% block content %}
+
+<h4> Entries for Deletion </h4>
+
+<div class="row"><div class="col-md-6">
+{% include 'heurtey_utils/common_form_only.html' %}
+</div></div>
+
+{% include object_list_template %}
+
+{% endblock %}

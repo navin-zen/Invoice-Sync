@@ -1,0 +1,96 @@
+{% load static %}
+{% load cloudzen_extras %}
+{% load i18n %}
+
+
+<!doctype html>
+<html {% block extraHtmlTags %}{% endblock %} lang="en">
+    <head>
+        <!-- Favicons -->
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=7kbajmgz6w" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=7kbajmgz6w" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=7kbajmgz6w" />
+        <link rel="manifest" href="/manifest.json?v=7kbajmgz6w" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg?v=7kbajmgz6w" color="#02c1d8" />
+        <link rel="shortcut icon" href="/favicon.ico?v=7kbajmgz6w" />
+        <meta charset="utf-8" />
+        <meta name="msapplication-TileColor" content="#02c1d8" />
+        <meta name="msapplication-TileImage" content="/mstile-144x144.png?v=7kbajmgz6w" />
+        <meta name="theme-color" content="#02c1d8" />
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha256-+kIbbrvS+0dNOjhmQJzmwe/RILR/8lb/+4+PUNVW09k="
+            crossorigin="anonymous"
+        ></script>
+
+        {% block seo_meta %}{% endblock %}
+
+        {% block opengraph_meta %}{% endblock %}
+        <!-- End Favicons -->
+
+        <title>{% block title %}GSTZen - Peaceful GST Compliance{% endblock %}</title>
+
+        {% js_constants %}
+        {% block customjsload %}{% endblock %}
+        <script type="text/javascript" src="{% static 'generated/javascript/bundle.js' %}"></script>
+        <script type="module" src="{% static 'generated/vite/TwAlert.js' %}"></script>
+        <script type="module" src="{% static 'generated/vite/Flowbite.js' %}"></script>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {% comment %}
+        <link href="https://my.gstzen.in/static/generated/bootstrap/css/main.css" rel="stylesheet" />
+        {% endcomment %}
+        <link href="{% static 'generated/vite/main.css' %}" rel="stylesheet" />
+        <style type="text/css">
+            {% block customcss %}
+            {% endblock %}
+        </style>
+    </head>
+    <body class="min-h-screen font-inter">
+        {% block navbar %}
+            {% include 'navbar_tw.html' %}
+        {% endblock navbar %}
+
+        {% block breadcrumbs_outer %}
+            {% include "breadcrumb.html" %}
+        {% endblock %}
+
+        <div class="container pt-5 min-h-screen">
+            {% with message_array=messages|get_message_array %}
+                <script type="text/javascript">
+                    document.addEventListener("DOMContentLoaded", function (event) {
+                        TwAlert(
+                            'django-messages',
+                            {{ message_array|safe }}
+                        );
+                    });
+                </script>
+            {% endwith %}
+            <div id="django-messages"></div>
+
+            {% block content_immediate_outer %}
+                {% block content %}
+                    The content of this page should be specified
+                    within a block named 'content'.
+                    https://docs.djangoproject.com/en/1.11/ref/templates/language/#template-inheritance
+                {% endblock content %}
+            {% endblock content_immediate_outer %}
+        </div>
+
+        {% include 'footer_tw.html' %}
+
+        {% if not debug %} {# freshdesk_popup request #} {% endif %}
+
+        {% block cz_attachments %}{% endblock %}
+
+        <script type="text/javascript">
+            {% block customjs %}{% endblock %}
+        </script>
+    </body>
+</html>

@@ -1,0 +1,107 @@
+{% load cloudzen_extras %}
+{% cz_var_exists datasource %}
+{% if datasource.type == "db:mssql" %}
+    <div class="mb-3">
+        <h4 class="text-center"><span class="text-muted">Data Source</span> Microsoft SQL Server</h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while connecting to Database</h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+    </div>
+    {% include "invoicing/settings/datasources/config_display_dbmssql.html" %}
+{% elif datasource.type == "db:postgresql" %}
+    <div class="mb-3">
+        <h4 class="text-center"><span class="text-muted">Data Source</span> PostgreSQL</h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while connecting to Database</h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+    </div>
+    {% include "invoicing/settings/datasources/config_display_dbmssql.html" with hide_backend_driver=True%}
+    {% elif datasource.type == "db:mysql" %}
+    <div class="mb-3">
+        <h4 class="text-center"><span class="text-muted">Data Source</span> MySQL</h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while connecting to Database</h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+    </div>
+    {% include "invoicing/settings/datasources/config_display_dbmssql.html" with hide_backend_driver=True%}
+{% elif datasource.type == "db:oracle" %}
+    <div class="mb-3">
+        <h4 class="text-center"><span class="text-muted">Data Source</span> Oracle </h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while connecting to Database</h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+    </div>
+    {% include "invoicing/settings/datasources/config_display_dbmssql.html" with hide_backend_driver=True%}
+{% elif datasource.type == "file:excel" %}
+    <div class="mb-3">
+        <!--{{datasource}}-->
+        <h4 class="text-center"><span class="text-muted">Data Source</span> Excel</h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while reading Excel file</h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+    </div>
+    {% include "invoicing/settings/datasources/config_display_dbmssql.html" with hide_backend_driver=True%}
+{% elif datasource.type == "file:csv" %}
+    <div class="mb-3">
+        <!--{{datasource}}-->
+        <h4 class="text-center"><span class="text-muted">Data Source</span> CSV File</h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while reading CSV file</h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+    </div>
+    {% include "invoicing/settings/datasources/config_display_dbmssql.html" with hide_backend_driver=True%}
+{% elif datasource.type == "erp:microsoft" %}
+    <div class="mb-3">
+        <h4 class="text-center"><span class="text-muted">Data Source</span> Microsoft Dynamics Navision</h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while trying to connect to Microsoft Dynamics</h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+    </div>
+    {% include "invoicing/settings/datasources/config_display_erpmicrosoft.html" with hide_backend_driver=True%}
+{% elif datasource.type == "odbc" %}
+    <div class="mb-3">
+        <h4 class="text-center"><span class="text-muted">Data Source</span> ODBC</h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while trying to connect to ODBC</h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+        {% include "invoicing/settings/datasources/config_display_odbc.html" with hide_backend_driver=True%}
+    </div>
+{% elif datasource.type == "erp:oracleebs" %}
+    <div class="mb-3">
+        <h4 class="text-center"><span class="text-muted">Data Source</span> Oracle E-Business Suite</h4>
+        {% if datasource.status.status == 0 %}
+            <h5 class="text-center text-danger">Error while trying to connect to EBS Folders </h5>
+            <div class="text-danger">
+                {{ datasource.status.message }}
+            </div>
+        {% endif %}
+        {% include "invoicing/settings/datasources/config_display_oracleebs.html" with hide_backend_driver=True %}
+    </div>
+{% else %}
+    Unknown type
+{% endif %}
+

@@ -1,0 +1,78 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account %}
+{% load socialaccount %}
+{% load static %}
+{% load account socialaccount %}
+{% load bootstrap4 %}
+{% load crispy_forms_tags %}
+{% load cloudzen_extras %}
+
+{% block customcss %}
+
+{% endblock %}
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block content %}
+{% cz_var_exists form %}
+
+<h1 class="mb-3 text-center display text-info">
+    <img alt="GSTZen | Peaceful GST Compliance" src="{% static 'images/logos/gst-logo-dark-cropped.png' %}" class="img-fluid" style="width: 400px; height: 100px;">
+</h1>
+
+<br/><br/>{% comment %}
+    {% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+    <p>{% blocktrans with site.name as site_name %}Please sign in with one
+    of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+    for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+
+    <div class="col-sm-offset-3 col-sm-6">
+        <div class="socialaccount_ballot">
+
+	    <ul class="socialaccount_providers">
+	        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+	    </ul>
+
+            <div class="login-or">{% trans 'or' %}</div>
+
+         </div>
+    </div>
+    {% include "socialaccount/snippets/login_extra.html" %}
+{% else %}
+	<div class="row">
+	    <div class="col-sm-6 col-sm-offset-3">
+		<p>{% blocktrans %}If you have not created an account yet, then please
+		<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+	    </div>
+	</div>
+{% endif %}
+{% endcomment %}
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3" style="margin: auto;">
+        <div class="card">
+            <div class="card-block">
+                <div class="form-header">
+		          <h3><i class="fa fa-lock"></i> {% trans "Sign In" %} </h3>
+                </div>
+                <form class="login" method="POST" action="{% url 'account_login' %}">
+		    {% csrf_token %}
+		    {% crispy form view.form_helper %}
+		    {% if redirect_field_value %}
+		        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+		    {% endif %}
+		    <div class="row"><div class="pt-3 text-center col-sm-12">
+                    <button type="submit" class="btn btn-success btn-block"> {% trans "Sign In" %}</button>
+                <br/>
+		        <a  href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+            </div></div>
+	            </form>
+            </div><!-- card-block -->
+        </div><!-- card -->
+    </div><!-- col -->
+</div><!-- row -->
+
+{% endblock %}

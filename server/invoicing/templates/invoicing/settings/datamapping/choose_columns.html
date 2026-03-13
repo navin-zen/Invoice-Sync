@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load cloudzen_extras %}
+{% load static %}
+{% cz_var_exists view.table_name view.column_details %}
+
+{% block customjsload %}
+    <script type="module" src="{% static 'generated/vite/DbColumnChooser.js' %}"></script>
+{% endblock customjsload %}
+
+{% block customjs %}
+    document.addEventListener("DOMContentLoaded", function (event) {
+        DbColumnChooser(
+            {{ view.ts_arg|cz_json:None|safe }}
+        );
+    });
+{% endblock customjs %}
+
+{% block content %}
+    {% if not view.column_details %}
+        <div class="alert alert-info">
+            No columns found in the table <strong>{{ view.table_name }}</strong>.
+        </div>
+    {% endif %}
+    <h3 class="mb-3 text-center">Map columns from your Database to the Purchase Sync Schema</h3>
+    <div id="react-app"></div>
+{% endblock content %}
+

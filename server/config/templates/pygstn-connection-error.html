@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Server error
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block breadcrumbs_outer %}{% endblock %}
+
+{% block content %}
+<div class="text-center alert alert-danger">
+    <p class=""><i class="fa fa-frown-o" style="font-size: 10em;"></i></p>
+    <p class="display-4">We are sorry!</p>
+    <p class="lead">
+    Unable to connect to Government GSTN Portal server: {{ exception_value }}
+    <br/>
+    This usually happens when Government Portal is under heavy load. Please
+    try again after some time.
+    <br/>
+    Please visit the <a href="/">GSTZen home page</a>.
+    </p>
+</div>
+{% endblock %}
