@@ -10,11 +10,9 @@ function* syncInvoices(syncUrl: string) {
     yield put(setSyncStatusAction("running"));
     yield put(setSyncErrorsAction([]));
     yield put(setSyncMessageAction("Connecting with DB")); // Immediate feedback
-    console.log("DEBUG: Started sync process, initial message set to 'Connecting with DB'");
     // @ts-ignore
     const response = yield call(httpPost, syncUrl, "", "text/plain");
     const data: SyncInvoicesResponse = yield response.json();
-    console.log("DEBUG: Received entrypoint URLs", data);
 
     // Trigger the actual sync in the background so we can start polling immediately
     yield fork(function* () {
@@ -31,13 +29,10 @@ function* syncInvoices(syncUrl: string) {
       // @ts-ignore
       const status_response = yield call(httpGet, data.urls.status + `?i=${i}`);
       const status: SyncInvoicesStatusResponse = yield status_response.json();
-      console.log(`DEBUG: Status poll ${i}`, status);
       if (status.message) {
-        console.log(`DEBUG: Updating message to: "${status.message}"`);
         yield put(setSyncMessageAction(status.message));
       }
       if (status.completed) {
-        console.log("DEBUG: Sync completed, stopping poll");
         yield put(setSyncStatusAction("complete"));
         yield put(setSyncErrorsAction(status.errors));
         break;

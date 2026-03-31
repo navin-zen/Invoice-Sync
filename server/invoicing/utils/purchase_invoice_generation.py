@@ -338,7 +338,6 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
     session = CachedData.objects2.get(uuid=session_uuid)
     all_errors = []
     try:
-        logger.info(f"SYNC PROGRESS: Setting status to 'Connecting with DB' for session {session_uuid}")
         CachedData.add_cached_data(
             datatype=CachedData.DT_PURCHASE_SUMMARY,
             data_json={"message": "Connecting with DB"},
@@ -380,7 +379,6 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
             else:
                 fi_cls = FetchPurchaseInvoicesFromMicrosoftSqlServer
 
-            logger.info(f"SYNC PROGRESS: Setting status to 'Fetching from the DB' for configuration '{config.site_name}'")
             CachedData.add_cached_data(
                 datatype=CachedData.DT_PURCHASE_SUMMARY,
                 data_json={"message": "Fetching from the DB"},
@@ -400,7 +398,6 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
             logger.error(f"Errors occurred during purchase sync: {distinct_errors}")
             CachedData.add_cached_data(datatype=CachedData.DT_PURCHASE_ERRORS, data_json=distinct_errors, group=session)
 
-        logger.info(f"SYNC PROGRESS: Setting status to 'Syncing to Cloud Zen' for session {session_uuid}")
         CachedData.add_cached_data(
             datatype=CachedData.DT_PURCHASE_SUMMARY,
             data_json={"message": "Syncing to Cloud Zen"},
@@ -410,7 +407,6 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
         post_all_purchases_to_gstzen(session=session)
     finally:
         # Add a finish marker so the UI knows we are done
-        logger.info(f"SYNC PROGRESS: Setting final status to 'Sync Completed' for session {session_uuid}")
         CachedData.add_cached_data(
             datatype=CachedData.DT_PURCHASE_FINISH,
             data_json={"status": "finished", "message": "Sync Completed"},
