@@ -2,31 +2,49 @@ import { call, delay, fork, put, take } from "redux-saga/effects";
 
 import { httpGet, httpPost } from "@/lib/fetch";
 
-import { ActionCode, type GenericRequestAction, setSyncErrorsAction, setSyncStatusAction } from "./actions";
+import { ActionCode, type GenericRequestAction, setSyncErrorsAction, setSyncStatusAction, setSyncMessageAction } from "./actions";
 import type { SyncInvoicesEntrypointArg, SyncInvoicesResponse, SyncInvoicesStatusResponse } from "./definitions";
 
 function* syncInvoices(syncUrl: string) {
   try {
+    yield put(setSyncStatusAction("running"));
+    yield put(setSyncErrorsAction([]));
+    yield put(setSyncMessageAction("Connecting with DB")); // Immediate feedback
+    console.log("DEBUG: Started sync process, initial message set to 'Connecting with DB'");
     // @ts-ignore
     const response = yield call(httpPost, syncUrl, "", "text/plain");
     const data: SyncInvoicesResponse = yield response.json();
-    yield call(httpPost, data.urls.sync_invoices, "", "text/plain");
-    yield put(setSyncStatusAction("running"));
-    yield put(setSyncErrorsAction([]));
-    yield delay(3000);
-    for (let i = 0; i < 600; i++) {
+    console.log("DEBUG: Received entrypoint URLs", data);
+
+    // Trigger the actual sync in the background so we can start polling immediately
+    yield fork(function* () {
+      try {
+        yield call(httpPost, data.urls.sync_invoices, "", "text/plain");
+      } catch (e) {
+        console.error("Sync failed", e);
+      }
+    });
+
+    yield delay(500);
+    for (let i = 0; i < 1800; i++) {
       // try for 30 minutes
       // @ts-ignore
       const status_response = yield call(httpGet, data.urls.status + `?i=${i}`);
       const status: SyncInvoicesStatusResponse = yield status_response.json();
+      console.log(`DEBUG: Status poll ${i}`, status);
+      if (status.message) {
+        console.log(`DEBUG: Updating message to: "${status.message}"`);
+        yield put(setSyncMessageAction(status.message));
+      }
       if (status.completed) {
+        console.log("DEBUG: Sync completed, stopping poll");
         yield put(setSyncStatusAction("complete"));
         yield put(setSyncErrorsAction(status.errors));
         break;
       }
-      yield delay(3000);
+      yield delay(1000);
     }
-  } catch (err) {}
+  } catch (err) { }
 }
 
 /**
