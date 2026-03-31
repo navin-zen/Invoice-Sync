@@ -254,6 +254,54 @@ PURCHASE_SCHEMA_SPEC = {
                 field("ValDtls.TotInvVal", "Invoice Total", ""),
             ],
         ),
+        section(
+            "Status Write Back Specification",
+            "For database backend only, details of how to write back the Sync Status and other details back to the database",
+            [
+                field(
+                    "WriteBackInfo.TableName",
+                    "Database Table Name",
+                    "The name of the database table to write sync status information",
+                ),
+                field(
+                    "WriteBackInfo.Fields.Timestamp",
+                    "Timestamp field name",
+                    "The name of the field containing the timestamp of the record",
+                ),
+                field(
+                    "WriteBackInfo.Fields.SyncStatus",
+                    "Sync Status field name",
+                    "The name of the field containing the Sync Status (Uploaded/Error) of the Invoice",
+                ),
+                field(
+                    "WriteBackInfo.Fields.SyncMessage",
+                    "Sync Message field name",
+                    "The name of the field containing the success or error message from the sync process",
+                ),
+            ]
+            + list(
+                itertools.chain.from_iterable(
+                    (
+                        field(
+                            f"WriteBackInfo.Fk.{i}.Field",
+                            f"Foreign Key to Invoice Table (Field {i + 1})",
+                            "The name of the field that contains the Foreign Key to the invoices table",
+                        ),
+                        field(
+                            f"WriteBackInfo.Fk.{i}.Type",
+                            f"Foreign Key to Invoice Table (Type {i + 1})",
+                            "The type of the Foreign Key field: date, str, etc.",
+                        ),
+                        field(
+                            f"WriteBackInfo.Fk.{i}.Value",
+                            f"Foreign Key to Invoice Table (Value {i + 1})",
+                            "The internal path to the value of the Foreign Key (e.g., DocDtls.No)",
+                        ),
+                    )
+                    for i in range(NUM_FK_FIELDS)
+                )
+            ),
+        ),
     ],
     "exclusive_or": [],
     "all_or_none": [],

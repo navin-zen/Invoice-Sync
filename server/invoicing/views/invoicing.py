@@ -21,7 +21,9 @@ from invoicing.utils.jsonschemas.sync_invoices import (
     SyncInvoicesResponseValidator,
     SyncInvoicesStatusResponseValidator,
 )
-from invoicing.utils.purchase_invoice_generation import fetch_purchase_invoices_for_session
+from invoicing.utils.purchase_invoice_generation import (
+    fetch_purchase_invoices_for_session,
+)
 from invoicing.utils.sync_session_summary import get_sync_details
 
 from cz_utils.allauth.account.utils import get_next_redirect_url
@@ -32,12 +34,13 @@ from cz_utils.decorators import instance_from_get_object, instance_from_url_uuid
 from cz_utils.django.views.generic.detail import UuidDetailView
 from cz_utils.json_utils import JSONEncoder, validate_json
 from cz_utils.text_utils import squeeze_space
+from cz_utils.xlsxwriter_utils import Cell, Column, Row, get_xlsxwriter_options
+from cz_utils.xlsxwriter_views import XlsxResponseMixin
 
 logger = logging.getLogger(__name__)
 
 __all__ = (
     "Home",
-    "InvoiceList",
     "PurchaseSyncEstablishLoginSession",
     "SyncPurchaseInvoicesStartSession",
     "SyncPurchaseInvoices",
@@ -45,6 +48,7 @@ __all__ = (
     "SyncSessionStatus",
     "SyncSessionFeedback",
     "InvoiceCountStatus",
+    "ExportInvoicesXlsx",
 )
 
 
@@ -71,14 +75,6 @@ class Home(TemplateView):
     @cached_property
     def invoice_count_details_list(self):
         return get_purchase_sync_count_json()
-
-    @cached_property
-    def purchasinvoicing_list(self):
-        return PurchaseInvoice.objects2.order_by("-date")[:100]
-
-
-class InvoiceList(TemplateView):
-    template_name = "invoicing/invoice_list.html"
 
     @cached_property
     def purchasinvoicing_list(self):
@@ -169,7 +165,9 @@ class PurchaseSyncEstablishLoginSession(FormTemplateMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        messages.success(self.request, "Successfully logged in to the Purchase Sync API Portal")
+        messages.success(
+            self.request, "Successfully logged in to the Purchase Sync API Portal"
+        )
         return get_next_redirect_url(self.request) or self.gstin.get_absolute_url()
 
 
@@ -182,8 +180,12 @@ class SyncPurchaseInvoicesStartSession(View):
         data = {
             "session_uuid": str(cd.uuid),
             "urls": {
-                "sync_invoices": reverse("invoicing:sync_purchase_invoices", args=[cd.uuid]),
-                "status": reverse("invoicing:sync_purchase_invoices_status", args=[cd.uuid]),
+                "sync_invoices": reverse(
+                    "invoicing:sync_purchase_invoices", args=[cd.uuid]
+                ),
+                "status": reverse(
+                    "invoicing:sync_purchase_invoices_status", args=[cd.uuid]
+                ),
             },
         }
         SyncInvoicesResponseValidator(data)
@@ -196,7 +198,8 @@ class SyncPurchaseInvoices(View):
     cacheddata: CachedData
 
     def post(self, request, *args, **kwargs):
-        fetch_purchase_invoices_for_session(session_uuid=str(self.cacheddata.uuid))
+        # We call it as an asynchronous task so that the UI can poll progress markers
+        fetch_purchase_invoices_for_session.nodelay()(session_uuid=str(self.cacheddata.uuid))
         return JsonResponse({})
 
 
@@ -208,12 +211,18 @@ class SyncPurchaseInvoicesStatus(UuidDetailView):
     @cached_property
     @validate_json(SyncInvoicesStatusResponseValidator, strict=settings.DEBUG)
     def status(self):
-        errors = CachedData.objects2.filter(group=self.session, datatype=CachedData.DT_PURCHASE_ERRORS).youngest()
+        errors = CachedData.objects2.filter(
+            group=self.session, datatype=CachedData.DT_PURCHASE_ERRORS
+        ).order_by("-create_date").first()
+        summary = CachedData.objects2.filter(
+            group=self.session, datatype=CachedData.DT_PURCHASE_SUMMARY
+        ).order_by("-create_date").first()
         return {
             "completed": CachedData.objects2.filter(
                 group=self.session, datatype=CachedData.DT_PURCHASE_FINISH
             ).exists(),
             "errors": (errors and errors.data_json) or [],
+            "message": (summary and summary.data_json and summary.data_json.get("message")) or "",
         }
 
     def render_to_response(self, context, **response_kwargs):
@@ -230,10 +239,79 @@ class SyncSessionFeedback(View):
     def get_sync_feedback(self):
         return get_sync_details()
 
+
 class InvoiceCountStatus(View):
     def get(self, request, *args, **kwargs):
         from invoicing.utils.count_purchase_sync import get_purchase_sync_count_json
+
         invoice_count = get_purchase_sync_count_json()
         return JsonResponse(invoice_count, encoder=JSONEncoder, safe=False)
 
 
+class InvoiceExportGenerator:
+    def __init__(self, invoices):
+        self.invoices = invoices
+
+    def write(self, file_object):
+        import xlsxwriter
+
+        workbook = xlsxwriter.Workbook(file_object, get_xlsxwriter_options())
+        worksheet = workbook.add_worksheet("Invoices")
+
+        header = Row(
+            [
+                "GSTIN",
+                "Document Type",
+                "Date",
+                "Invoice Number",
+                "Counter-party GSTIN",
+                "Status",
+                "Status Message",
+            ],
+            format={"bold": True, "bg_color": "#D3D3D3"},
+        )
+
+        rows = [header]
+        for invoice in self.invoices:
+            rows.append(
+                Row(
+                    [
+                        invoice.gstin.gstin,
+                        invoice.document_type_display,
+                        invoice.date,
+                        invoice.number,
+                        invoice.ctin,
+                        invoice.get_purchase_status_display(),
+                        invoice.status_message,
+                    ]
+                )
+            )
+
+        Column(rows).render(workbook, worksheet, 0, 0)
+        workbook.close()
+
+
+class ExportInvoicesXlsx(XlsxResponseMixin, View):
+    def get_xlsx_filename(self):
+        status = self.request.GET.get("status")
+        if status == "error":
+            return "invoice_error_report.xlsx"
+        elif status == "success":
+            return "synced_successful_invoices.xlsx"
+        return "all_invoices.xlsx"
+
+    @property
+    def xlsx_filename(self):
+        return self.get_xlsx_filename()
+
+    @property
+    def xlsx_generator(self):
+        status = self.request.GET.get("status")
+        invoices = PurchaseInvoice.objects2.all()
+
+        if status == "error":
+            invoices = invoices.filter(purchase_status=PurchaseInvoice.PIS_ERROR)
+        elif status == "success":
+            invoices = invoices.filter(purchase_status=PurchaseInvoice.PIS_UPLOADED)
+
+        return InvoiceExportGenerator(invoices.order_by("-date"))

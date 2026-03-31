@@ -13,6 +13,15 @@ from django.utils import timezone
 from sqlalchemy import inspect
 from utils.importer import CustomXls
 
+try:
+    import oracledb
+    import sys
+    # Satisfy SQLAlchemy 1.4 version check (expects >= 5.2)
+    oracledb.version = "8.3.0"
+    sys.modules["cx_Oracle"] = oracledb
+except ImportError:
+    pass
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,6 +49,10 @@ def create_engine(
         )
     if service_name:
         query["service_name"] = service_name
+        # For Oracle, database and service_name cannot both be present in the URL
+        if "oracle" in sqlalchemy_driver:
+            database = None
+
     url = sqlalchemy.engine.url.URL(
         drivername=sqlalchemy_driver,
         username=username,
@@ -322,6 +335,14 @@ def get_column_names(engine, table_name):
 def get_example_row(engine, table_name):
     metadata = sqlalchemy.MetaData(bind=engine)
     table = sqlalchemy.Table(table_name, metadata, autoload=True, autoload_with=engine)
+
+    # Initialize Oracle EBS session context (SQLAP) for Multi-Org views
+    if "oracle" in str(engine.url.drivername).lower():
+        try:
+            engine.execute("BEGIN apps.mo_global.init('SQLAP'); END;")
+        except Exception:
+            pass
+
     query = sqlalchemy.select([table]).limit(1)
     return [dict(r) for r in engine.execute(query)]
 

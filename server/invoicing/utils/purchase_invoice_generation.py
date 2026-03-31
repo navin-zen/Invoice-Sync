@@ -131,6 +131,16 @@ PURCHASE_LINEITEM_LEVEL_TRANS_SPEC = [
     ("ValDtls.SgstVal", to_decimal_round2, NO_DEFAULT),
     ("ValDtls.CesVal", to_decimal_round2, NO_DEFAULT),
     ("ValDtls.TotInvVal", to_decimal_round2, NO_DEFAULT),
+    ("WriteBackInfo.TableName", identity, NO_DEFAULT),
+    ("WriteBackInfo.Fields.Timestamp", identity, NO_DEFAULT),
+    ("WriteBackInfo.Fields.SyncStatus", identity, NO_DEFAULT),
+    ("WriteBackInfo.Fields.SyncMessage", identity, NO_DEFAULT),
+] + [
+    (f"WriteBackInfo.Fk.{i}.Field", identity, NO_DEFAULT) for i in range(5)
+] + [
+    (f"WriteBackInfo.Fk.{i}.Type", identity, NO_DEFAULT) for i in range(5)
+] + [
+    (f"WriteBackInfo.Fk.{i}.Value", identity, NO_DEFAULT) for i in range(5)
 ]
 
 
@@ -273,6 +283,15 @@ class FetchPurchaseInvoicesFromMicrosoftSqlServer(FetchPurchaseInvoices):
     def get_unvalidated_lineitems(self):
         kwargs = database_connection_kwargs(self.datasource)
         engine = create_engine(**kwargs)
+
+        # Initialize Oracle EBS session context (SQLAP) for Multi-Org views
+        if "oracle" in str(engine.url.drivername).lower():
+            try:
+                engine.execute("BEGIN apps.mo_global.init('SQLAP'); END;")
+                logger.info(f"Initialized Oracle EBS context for {self.configuration}")
+            except Exception as e:
+                logger.warning(f"Failed to initialize Oracle EBS context for {self.configuration}: {e}")
+
         rows = [
             dict(row)
             for row in get_data_from_db(
@@ -281,7 +300,8 @@ class FetchPurchaseInvoicesFromMicrosoftSqlServer(FetchPurchaseInvoices):
                 columnmapping=self.datamapping.get("details", {}),
             )
         ]
-        logger.info(f"Retrieved {len(rows)} raw rows from SQL Server for {self.configuration}")
+        db_type = "Oracle" if "oracle" in str(engine.url.drivername).lower() else "SQL Server"
+        logger.info(f"Retrieved {len(rows)} raw rows from {db_type} for {self.configuration}")
         return rows
 
 
@@ -318,9 +338,16 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
     session = CachedData.objects2.get(uuid=session_uuid)
     all_errors = []
     try:
+        logger.info(f"SYNC PROGRESS: Setting status to 'Connecting with DB' for session {session_uuid}")
+        CachedData.add_cached_data(
+            datatype=CachedData.DT_PURCHASE_SUMMARY,
+            data_json={"message": "Connecting with DB"},
+            group=session,
+        )
         configs = Configuration.objects2.all()
         if not configs.exists():
             all_errors.append("No Configuration is set. Please go to Settings and add a Configuration.")
+            return
 
         for config in configs:
             if only_config and (config != only_config):
@@ -328,10 +355,11 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
             if is_autorun and not config.enable_autosync:
                 logger.info(f"Skipping configuration '{config.site_name}' because autosync is disabled")
                 continue
+
             si = SettingsInfo(config)
             if not si.datasource_settings or not si.datasource_settings.get("config"):
                 error_msg = f"Configuration '{config.site_name}' is skipped because datasource is not configured"
-                logger.info(error_msg)
+                logger.error(error_msg)
                 all_errors.append(error_msg)
                 continue
 
@@ -352,6 +380,12 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
             else:
                 fi_cls = FetchPurchaseInvoicesFromMicrosoftSqlServer
 
+            logger.info(f"SYNC PROGRESS: Setting status to 'Fetching from the DB' for configuration '{config.site_name}'")
+            CachedData.add_cached_data(
+                datatype=CachedData.DT_PURCHASE_SUMMARY,
+                data_json={"message": "Fetching from the DB"},
+                group=session,
+            )
             errors = fi_cls(
                 configuration=config,
                 session=session,
@@ -366,13 +400,20 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
             logger.error(f"Errors occurred during purchase sync: {distinct_errors}")
             CachedData.add_cached_data(datatype=CachedData.DT_PURCHASE_ERRORS, data_json=distinct_errors, group=session)
 
+        logger.info(f"SYNC PROGRESS: Setting status to 'Syncing to Cloud Zen' for session {session_uuid}")
+        CachedData.add_cached_data(
+            datatype=CachedData.DT_PURCHASE_SUMMARY,
+            data_json={"message": "Syncing to Cloud Zen"},
+            group=session,
+        )
         # Always trigger cloud sync if we are in this background flow
         post_all_purchases_to_gstzen(session=session)
     finally:
         # Add a finish marker so the UI knows we are done
+        logger.info(f"SYNC PROGRESS: Setting final status to 'Sync Completed' for session {session_uuid}")
         CachedData.add_cached_data(
             datatype=CachedData.DT_PURCHASE_FINISH,
-            data_json={"status": "finished"},
+            data_json={"status": "finished", "message": "Sync Completed"},
             group=session
         )
 
