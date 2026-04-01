@@ -26,6 +26,7 @@ SyncInvoicesStatusResponse = StrictObject(
     dict(
         completed=Boolean,
         errors=Array(items=String),
+        message=String,
     )
 )
 

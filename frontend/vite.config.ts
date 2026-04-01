@@ -21,7 +21,8 @@ export default defineConfig({
     },
   },
   build: {
-    emptyOutDir: false,
+    outDir: "../server/config/static/generated/vite",
+    emptyOutDir: true,
     minify: process.env.NODE_ENV === "production",
     sourcemap: process.env.NODE_ENV !== "production",
     rollupOptions: {

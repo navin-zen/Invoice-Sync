@@ -5,6 +5,7 @@ export const INITIAL_STATE: State = {
   value: 0,
   syncStatus: "initial",
   errors: [],
+  syncMessage: "",
 };
 
 export function reducer(state: State = INITIAL_STATE, action: Action): State {
@@ -26,6 +27,11 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
       return {
         ...state,
         errors: action.errors,
+      };
+    case ActionCode.SET_SYNC_MESSAGE:
+      return {
+        ...state,
+        syncMessage: action.message,
       };
     default:
       return state;

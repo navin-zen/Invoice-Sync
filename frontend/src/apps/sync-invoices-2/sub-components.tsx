@@ -4,6 +4,7 @@ import type { SyncStatus } from "./state";
 
 interface SyncStatusDisplayProps {
   status: SyncStatus;
+  message?: string;
 }
 
 export function SyncStatusDisplay(props: SyncStatusDisplayProps) {
@@ -14,7 +15,7 @@ export function SyncStatusDisplay(props: SyncStatusDisplayProps) {
   } else if (props.status === "running") {
     return (
       <h3 className="font-semibold tracking-tight leading-none text-center text-primary">
-        <i className="mr-2 fa-solid fa-spin fa-spinner"></i>Syncing in progress
+        <i className="mr-2 fa-solid fa-spin fa-spinner"></i>{props.message || "Syncing in progress"}
       </h3>
     );
   } else if (props.status === "complete") {

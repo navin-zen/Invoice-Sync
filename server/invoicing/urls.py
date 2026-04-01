@@ -15,7 +15,10 @@ urlpatterns = [
     cz_url(r"^invoices/$", views.InvoiceList),
     cz_url(rf"^invoices-detail/{CZ_UUID}/$", views.PurchaseInvoiceDetail),
     cz_url(rf"^invoices-detail/{CZ_UUID}/.json/$", views.PurchaseInvoiceJson),
-    cz_url(rf"^invoices-detail/{CZ_UUID}/response/.json/$", views.PurchaseInvoiceResponseJson),
+    cz_url(
+        rf"^invoices-detail/{CZ_UUID}/response/.json/$",
+        views.PurchaseInvoiceResponseJson,
+    ),
     cz_url(rf"^invoices-detail/{CZ_UUID}/.html/$", views.PurchaseInvoiceHtml),
     cz_url(rf"^invoices-detail/{CZ_UUID}/.pdf2/$", views.PurchaseInvoicePdf),
     cz_url(rf"^gstins/{CZ_UUID}/irp-login/$", views.PurchaseSyncEstablishLoginSession),
@@ -24,18 +27,45 @@ urlpatterns = [
     cz_url(rf"^settings/export/.json/{CZ_UUID}/$", views.SettingsExport),
     cz_url(rf"^settings/import/{CZ_UUID}/$", views.SettingsImport),
     cz_url(rf"^settings/json-display/.json/{CZ_UUID}/$", views.SettingsJsonDisplay),
-    cz_url(rf"^settings/datamapping/choose-table/{CZ_UUID}/$", views.DataMappingChooseTable),
-    cz_url(rf"^settings/datamapping/choose-worksheet/{CZ_UUID}/$", views.DataMappingChooseWorksheet),
-    cz_url(rf"^settings/datamapping/choose-columns/{CZ_UUID}/$", views.DataMappingChooseColumns),
-    cz_url(rf"^settings/datamapping/choose-headers/{CZ_UUID}/$", views.DataMappingChooseHeaders),
-    cz_url(rf"^settings/datamapping/choose-csv-headers/{CZ_UUID}/$", views.DataMappingChooseCsvHeaders),
+    cz_url(
+        rf"^settings/datamapping/choose-table/{CZ_UUID}/$", views.DataMappingChooseTable
+    ),
+    cz_url(
+        rf"^settings/datamapping/choose-worksheet/{CZ_UUID}/$",
+        views.DataMappingChooseWorksheet,
+    ),
+    cz_url(
+        rf"^settings/datamapping/choose-columns/{CZ_UUID}/$",
+        views.DataMappingChooseColumns,
+    ),
+    cz_url(
+        rf"^settings/datamapping/choose-headers/{CZ_UUID}/$",
+        views.DataMappingChooseHeaders,
+    ),
+    cz_url(
+        rf"^settings/datamapping/choose-csv-headers/{CZ_UUID}/$",
+        views.DataMappingChooseCsvHeaders,
+    ),
     cz_url(rf"^settings/datamapping/set-mapping/{CZ_UUID}/$", views.SetDataMapping),
     cz_url(rf"^settings/datasource/choices/{CZ_UUID}/$", views.DataSourceChoices),
-    cz_url(rf"^settings/datasource/configure/db/mssql/{CZ_UUID}/$", views.ConfigureMicrosoftSqlServer),
-    cz_url(rf"^settings/datasource/configure/db/mysql/{CZ_UUID}/$", views.ConfigureMySql),
-    cz_url(rf"^settings/datasource/configure/db/oracle/{CZ_UUID}/$", views.ConfigureOracleDatabase),
-    cz_url(rf"^settings/datasource/configure/db/oracle/{CZ_UUID}/$", views.ConfigureOracle),
-    cz_url(rf"^settings/datasource/configure/db/postgresql/{CZ_UUID}/$", views.ConfigurePostgresql),
+    cz_url(
+        rf"^settings/datasource/configure/db/mssql/{CZ_UUID}/$",
+        views.ConfigureMicrosoftSqlServer,
+    ),
+    cz_url(
+        rf"^settings/datasource/configure/db/mysql/{CZ_UUID}/$", views.ConfigureMySql
+    ),
+    cz_url(
+        rf"^settings/datasource/configure/db/oracle/{CZ_UUID}/$",
+        views.ConfigureOracleDatabase,
+    ),
+    cz_url(
+        rf"^settings/datasource/configure/db/oracle/{CZ_UUID}/$", views.ConfigureOracle
+    ),
+    cz_url(
+        rf"^settings/datasource/configure/db/postgresql/{CZ_UUID}/$",
+        views.ConfigurePostgresql,
+    ),
     cz_url(
         rf"^settings/datasource/configure/erp/microsoft/{CZ_UUID}/$",
         views.ConfigureMicrosoftDynamicsNavision,
@@ -53,6 +83,10 @@ urlpatterns = [
     cz_url(r"^settings/auto-sync/$", views.AutoSyncConfiguration),
     cz_url(r"^sync-purchase-invoices/start/$", views.SyncPurchaseInvoicesStartSession),
     cz_url(rf"^sync-purchase-invoices/{CZ_UUID}/$", views.SyncPurchaseInvoices),
-    cz_url(rf"^sync-purchase-invoices/{CZ_UUID}/status/.json/$", views.SyncPurchaseInvoicesStatus),
+    cz_url(
+        rf"^sync-purchase-invoices/{CZ_UUID}/status/.json/$",
+        views.SyncPurchaseInvoicesStatus,
+    ),
     cz_url(r"^post-purchase-data/purchase-json/$", views.PurchaseJsonPost),
+    cz_url(r"^invoices/export/xlsx/$", views.ExportInvoicesXlsx),
 ]

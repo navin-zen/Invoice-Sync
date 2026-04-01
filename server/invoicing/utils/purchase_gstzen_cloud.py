@@ -58,6 +58,11 @@ def post_purchase_to_gstzen(purchase_invoice):
         purchase_invoice.purchase_status = PurchaseInvoice.PIS_ERROR
 
     purchase_invoice.save()
+    
+    # Write back the status to the customer database
+    from invoicing.utils.write_back import write_back
+    write_back(purchase_invoice)
+    
     return error_message
 
 

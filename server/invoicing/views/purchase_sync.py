@@ -30,62 +30,8 @@ from cz_utils.django.views.generic.detail import UuidDetailView
 
 logger = logging.getLogger(__name__)
 
-@method_decorator(csrf_exempt, name="dispatch")
-class SyncPurchaseInvoicesStartSession(View):
-    def post(self, request, *args, **kwargs):
-        cd = CachedData(datatype=CachedData.DT_PURCHASE_SESSION_MARKER)
-        cd.full_clean()
-        cd.save()
-        data = {
-            "session_uuid": str(cd.uuid),
-            "urls": {
-                "sync_invoices": reverse("invoicing:sync_purchase_invoices", args=[cd.uuid]),
-                "status": reverse("invoicing:sync_purchase_invoices_status", args=[cd.uuid]),
-            },
-        }
-        return JsonResponse(data)
+# Duplicate views removed to avoid shadowing invoicing.views.invoicing
 
-
-@method_decorator(csrf_exempt, name="dispatch")
-@instance_from_url_uuid(CachedData)
-class SyncPurchaseInvoices(View):
-    cacheddata: CachedData
-
-    def post(self, request, *args, **kwargs):
-        # Trigger the process in background to ensure it's not blocking the UI.
-        # nodelay() schedules it and triggers immediate processing.
-        fetch_purchase_invoices_for_session.nodelay()(session_uuid=str(self.cacheddata.uuid), is_autorun=False)
-        return JsonResponse({"status": "success"})
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-@instance_from_url_uuid(CachedData)
-class SyncPurchaseInvoicesStatus(View):
-    cacheddata: CachedData
-
-    def get(self, request, *args, **kwargs):
-        finished = CachedData.objects2.filter(
-            group=self.cacheddata,
-            datatype=CachedData.DT_PURCHASE_FINISH
-        ).exists()
-
-        # Aggregate all unique errors from all error records for this session
-        error_records = CachedData.objects2.filter(
-            group=self.cacheddata,
-            datatype=CachedData.DT_PURCHASE_ERRORS
-        )
-        all_errors = []
-        for record in error_records:
-            if isinstance(record.data_json, list):
-                all_errors.extend(record.data_json)
-
-        distinct_errors = list(dict.fromkeys(all_errors))
-
-        return JsonResponse({
-            "completed": finished,
-            "errors": distinct_errors,
-            "error_message": distinct_errors[0] if distinct_errors else None
-        })
 
 
 @method_decorator(csrf_exempt, name="dispatch")

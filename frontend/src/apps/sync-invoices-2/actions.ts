@@ -5,6 +5,7 @@ export enum ActionCode {
   GENERIC_REQUEST = "generic-request",
   SET_SYNC_STATUS = "set-sync-status",
   SET_SYNC_ERRORS_ACTION = "set-sync-errors-action",
+  SET_SYNC_MESSAGE = "set-sync-message",
 }
 
 interface IncrementAction {
@@ -18,6 +19,12 @@ export interface GenericRequestAction {
   request: RequestType;
 }
 
+export interface SyncInvoicesStatusResponse {
+  completed: boolean;
+  errors: string[];
+  message: string;
+}
+
 export interface SetSyncStatusAction {
   type: ActionCode.SET_SYNC_STATUS;
   value: SyncStatus;
@@ -28,7 +35,12 @@ export interface SetSyncErrorsAction {
   errors: Array<string>;
 }
 
-export type Action = IncrementAction | GenericRequestAction | SetSyncStatusAction | SetSyncErrorsAction;
+export interface SetSyncMessageAction {
+  type: ActionCode.SET_SYNC_MESSAGE;
+  message: string;
+}
+
+export type Action = IncrementAction | GenericRequestAction | SetSyncStatusAction | SetSyncErrorsAction | SetSyncMessageAction;
 
 export function incrementAction(): IncrementAction {
   return {
@@ -54,5 +66,12 @@ export function setSyncErrorsAction(errors: Array<string>): SetSyncErrorsAction 
   return {
     type: ActionCode.SET_SYNC_ERRORS_ACTION,
     errors,
+  };
+}
+
+export function setSyncMessageAction(message: string): SetSyncMessageAction {
+  return {
+    type: ActionCode.SET_SYNC_MESSAGE,
+    message,
   };
 }

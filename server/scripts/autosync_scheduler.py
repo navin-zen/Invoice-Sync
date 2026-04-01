@@ -1,5 +1,5 @@
 def main():
-    from einvoicing.utils.autosync_scheduler import schedule_autosync
+    from invoicing.utils.autosync_scheduler import schedule_autosync
 
     schedule_autosync()
 

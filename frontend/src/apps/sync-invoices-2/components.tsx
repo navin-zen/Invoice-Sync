@@ -22,6 +22,7 @@ interface AppPropsFromState {
   value: number;
   syncStatus: SyncStatus;
   errors: Array<string>;
+  syncMessage: string;
 }
 
 /**
@@ -35,7 +36,7 @@ interface AppPropsFromDispatch {
 /**
  * All props
  */
-interface AppProps extends AppOwnProps, AppPropsFromState, AppPropsFromDispatch {}
+interface AppProps extends AppOwnProps, AppPropsFromState, AppPropsFromDispatch { }
 
 class AppInternal extends React.Component<AppProps, {}> {
   syncButton() {
@@ -61,7 +62,7 @@ class AppInternal extends React.Component<AppProps, {}> {
           {this.syncButton()}
         </CardHeader>
         <CardContent>
-          <SyncStatusDisplay status={this.props.syncStatus} />
+          <SyncStatusDisplay status={this.props.syncStatus} message={this.props.syncMessage} />
           <SyncErrorsDisplay errors={this.props.errors} />
         </CardContent>
       </Card>
@@ -77,6 +78,7 @@ function mapStateToProps(state: State, _: AppOwnProps): AppPropsFromState {
     value: state.value,
     syncStatus: state.syncStatus,
     errors: state.errors,
+    syncMessage: state.syncMessage,
   };
 }
 
