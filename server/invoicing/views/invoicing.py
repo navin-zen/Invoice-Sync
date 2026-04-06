@@ -283,8 +283,8 @@ class InvoiceExportGenerator:
                         invoice.date or "",
                         invoice.number or "",
                         invoice.ctin or "",
-                        (invoice.metadata or {}).get("GlAccountId", ""),
-                        (invoice.metadata or {}).get("DocumentIdentifier", ""),
+                        (invoice.metadata or {}).get("GlAccountId") or "",
+                        (invoice.metadata or {}).get("DocumentIdentifier") or "",
                         invoice.get_purchase_status_display() or "",
                         invoice.status_message or "",
                     ]
