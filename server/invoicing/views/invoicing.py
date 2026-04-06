@@ -278,15 +278,15 @@ class InvoiceExportGenerator:
             rows.append(
                 Row(
                     [
-                        invoice.gstin.gstin,
-                        invoice.document_type_display,
-                        invoice.date,
-                        invoice.number,
-                        invoice.ctin,
+                        invoice.gstin.gstin or "",
+                        invoice.document_type_display or "",
+                        invoice.date or "",
+                        invoice.number or "",
+                        invoice.ctin or "",
                         (invoice.metadata or {}).get("GlAccountId", ""),
                         (invoice.metadata or {}).get("DocumentIdentifier", ""),
-                        invoice.get_purchase_status_display(),
-                        invoice.status_message,
+                        invoice.get_purchase_status_display() or "",
+                        invoice.status_message or "",
                     ]
                 )
             )
