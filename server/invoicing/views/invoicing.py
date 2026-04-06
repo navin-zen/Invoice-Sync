@@ -265,6 +265,8 @@ class InvoiceExportGenerator:
                 "Date",
                 "Invoice Number",
                 "Counter-party GSTIN",
+                "GL Account ID",
+                "Document Identifier",
                 "Status",
                 "Status Message",
             ],
@@ -281,6 +283,8 @@ class InvoiceExportGenerator:
                         invoice.date,
                         invoice.number,
                         invoice.ctin,
+                        (invoice.metadata or {}).get("GlAccountId", ""),
+                        (invoice.metadata or {}).get("DocumentIdentifier", ""),
                         invoice.get_purchase_status_display(),
                         invoice.status_message,
                     ]
