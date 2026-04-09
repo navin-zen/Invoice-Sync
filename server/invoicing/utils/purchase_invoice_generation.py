@@ -273,10 +273,55 @@ class FetchPurchaseInvoices(FetchInvoices):
 
     @classmethod
     def save_purchase_invoices_in_our_db(cls, purchase_invoices, configuration, session_uuid, eg):
+        from invoicing.models import GstIn, PurchaseInvoice
         from invoicing.utils.purchase_our_db import add_purchase_invoice
+        
+        # 1. Pre-fetch all GstIn objects once
+        gstin_strings = {pj.get("BuyerDtls", {}).get("Gstin") for (_, pj) in purchase_invoices if pj.get("BuyerDtls", {}).get("Gstin")}
+        gstin_cache = {g.gstin: g for g in GstIn.objects2.filter(gstin__in=gstin_strings)}
+        
+        to_create = []
+        to_update = []
+        processed_objects = []
+        
+        # 2. Prepare objects without saving
         for error_message, pj in purchase_invoices:
             with eg.wrapper():
-                add_purchase_invoice(error_message, pj, session_uuid, configuration)
+                gstin_string = pj.get("BuyerDtls", {}).get("Gstin")
+                gstin_obj = gstin_cache.get(gstin_string)
+                
+                # add_purchase_invoice with commit=False will return an unsaved instance
+                el = add_purchase_invoice(error_message, pj, session_uuid, configuration, gstin_obj=gstin_obj, commit=False)
+                if el:
+                    processed_objects.append(el)
+        
+        # 3. Bulk Save
+        # Since we use UUIDs and have a unique_together constraint, we can use bulk_create with update_conflicts
+        # or separate existing ones. For maximum safety across different DB backends, 
+        # let's split into Create vs Update.
+        
+        for obj in processed_objects:
+            if obj._state.adding:
+                to_create.append(obj)
+            else:
+                obj.modify_date = timezone.now()
+                to_update.append(obj)
+        
+        if to_create:
+            # batch_size=500 is a safe default
+            PurchaseInvoice.objects2.bulk_create(to_create, batch_size=500, ignore_conflicts=True)
+            logger.info(f"Bulk created {len(to_create)} purchase invoices")
+            
+        if to_update:
+            # bulk_update requires specifying update_fields
+            # Note: modify_date must be explicitly included as bulk_update skips auto_now=True
+            update_fields = [
+                "docsubtype", "date", "ctin", "purchase_status", 
+                "purchase_json", "purchase_response", "metadata", 
+                "configuration", "upload_uuid", "modify_date"
+            ]
+            PurchaseInvoice.objects2.bulk_update(to_update, fields=update_fields, batch_size=500)
+            logger.info(f"Bulk updated {len(to_update)} purchase invoices")
 
 
 class FetchPurchaseInvoicesFromMicrosoftSqlServer(FetchPurchaseInvoices):

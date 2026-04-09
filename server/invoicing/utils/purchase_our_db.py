@@ -13,7 +13,7 @@ from cz_utils.dateparse import parse_date
 logger = logging.getLogger(__name__)
 
 
-def add_purchase_invoice(error_message: str, pj, session_uuid, configuration):
+def add_purchase_invoice(error_message: str, pj, session_uuid, configuration, gstin_obj=None, commit=True):
     """
     Add a Purchase Invoice JSON to the PurchaseInvoice table
 
@@ -35,9 +35,12 @@ def add_purchase_invoice(error_message: str, pj, session_uuid, configuration):
     if not gstin_string:
         raise QuietValueError("BuyerDtls.Gstin (Buyer GSTIN) is missing in purchase data")
 
-    gstin = GstIn.objects2.filter(gstin=gstin_string).first()
-    if not gstin:
-        raise QuietValueError(f"The Taxpayer GSTIN {gstin_string} is not configured in your GST Registrations")
+    if gstin_obj:
+        gstin = gstin_obj
+    else:
+        gstin = GstIn.objects2.filter(gstin=gstin_string).first()
+        if not gstin:
+            raise QuietValueError(f"The Taxpayer GSTIN {gstin_string} is not configured in your GST Registrations")
 
     seller_dtls = pj.get("SellerDtls", {})
     ctin = seller_dtls.get("Gstin", "")
@@ -131,7 +134,11 @@ def add_purchase_invoice(error_message: str, pj, session_uuid, configuration):
         el.full_clean()
     except Exception as ex:
         raise ErrorWithInvoiceDetails(ex, invoice=No)
-    el.save()
-    logger.info(f"Saved Purchase Invoice: {No} (Supplier: {ctin}, Status: {el.status_message})")
+        
+    if commit:
+        el.save()
+        logger.info(f"Saved Purchase Invoice: {No} (Supplier: {ctin}, Status: {el.status_message})")
+        
+    return el
 
 
