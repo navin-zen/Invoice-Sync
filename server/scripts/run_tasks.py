@@ -8,9 +8,7 @@ import time
 
 from django.db.models import F
 from django.utils import timezone
-from einvoicing.models import CachedData
-from einvoicing.utils.purchase_gstzen_cloud import post_all_purchases_to_gstzen
-from einvoicing.utils.purchase_invoice_generation import fetch_purchase_invoices_for_session
+from invoicing.utils.purchase_gstzen_cloud import post_all_purchases_to_gstzen
 from scripts.backup_configuration import main as backup_main
 
 from gstnapi.models import ScheduledTask
