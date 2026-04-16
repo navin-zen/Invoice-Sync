@@ -168,8 +168,38 @@ class FetchPurchaseInvoices(FetchInvoices):
                 if not eg.errors or self.ALLOW_PARTIAL_SAVE:
                     logger.info(f"Saving {len(purchase_invoices)} purchase invoices to local DB")
                     self.save_purchase_invoices_in_our_db(purchase_invoices, self.configuration, self.session.uuid, eg)
-        # Handle emails and errors similarly to FetchInvoices
-        self.send_emails([str(e) for e in eg.errors], self.notification)
+        # Handle emails and errors
+        errors = [str(e) for e in eg.errors]
+
+        if errors:
+            # Include details for the first 10 invoice errors
+            detailed_errors = []
+            error_count = 0
+            for msg, pj in purchase_invoices:
+                if msg:
+                    doc_no = pj.get('DocDtls', {}).get('No', 'Unknown')
+                    detailed_errors.append(f"Invoice {doc_no}: {msg}")
+                    error_count += 1
+                if error_count >= 10:
+                    break
+            
+            # Combine general errors with detailed invoice errors
+            all_errors_to_send = errors + detailed_errors
+            
+            # Fetch invoices for this session to include in the Excel attachment
+            invoices_to_attach = PurchaseInvoice.objects2.filter(
+                configuration=self.configuration, 
+                upload_uuid=self.session.uuid
+            ).order_by("-date")
+            
+            self.send_emails(
+                all_errors_to_send, 
+                self.notification, 
+                success=False, 
+                subject="while fetch the errors are below",
+                invoices=invoices_to_attach,
+                file_prefix="fetch_error"
+            )
         with contextlib.suppress(Exception):
             self.write_error_file([str(e) for e in eg.errors])
         if not eg.errors or self.ALLOW_PARTIAL_SAVE:
@@ -356,7 +386,12 @@ class FetchPurchaseInvoicesFromExcel(FetchPurchaseInvoices):
 
     def complete_init(self):
         config = self.datasource.get("config", {})
-        self.filename = get_excel_filepath_for_glob(config.get("path"))
+        path_pattern = config.get("path")
+        try:
+            self.filename = get_excel_filepath_for_glob(path_pattern)
+            logger.info(f"FetchPurchaseInvoicesFromExcel: Initialized with filename: {self.filename}")
+        except Exception as e:
+            logger.warning(f"FetchPurchaseInvoicesFromExcel: Failed to find file for pattern {path_pattern}: {e}")
 
     def get_unvalidated_lineitems(self):
         rows = [
@@ -445,7 +480,7 @@ def fetch_purchase_invoices_for_session(session_uuid, is_autorun=False, only_con
 
         CachedData.add_cached_data(
             datatype=CachedData.DT_PURCHASE_SUMMARY,
-            data_json={"message": "Syncing to Cloud Zen"},
+            data_json={"message": "Syncing to CloudZen"},
             group=session,
         )
         # Always trigger cloud sync if we are in this background flow

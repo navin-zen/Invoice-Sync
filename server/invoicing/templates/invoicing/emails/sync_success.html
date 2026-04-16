@@ -1,0 +1,21 @@
+
+{% block content %}
+<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <p>Hi,</p>
+    <p style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; border-left: 5px solid #28a745;">
+        The purchase invoice synchronization for <strong>{{ configuration.site_name }}</strong> has completed with <strong style="color: #28a745;">SUCCESS</strong>.
+    </p>
+    <p><strong>Processed Invoices (First 10):</strong></p>
+    <ul style="color: #155724;">
+        {% for success in successes|slice:":10" %}
+        <li>{{ success }}</li>
+        {% endfor %}
+        {% if successes|length > 10 %}
+        <li>... and more</li>
+        {% endif %}
+    </ul>
+    <p>Please find the attached spreadsheet with the complete processed data.</p>
+    <p style="color: #6c757d; font-size: 0.9em;"><strong>Note:</strong> Detailed reports are attached to this email and saved in the server's reports folder.</p>
+    <p>Regards,<br><strong>Team GstZen</strong></p>
+</div>
+{% endblock %}
