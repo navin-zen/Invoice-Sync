@@ -9,6 +9,8 @@ import os
 import requests
 from concurrent.futures import ThreadPoolExecutor
 from invoicing.models import PurchaseInvoice
+from invoicing.utils.settings import SettingsInfo
+from invoicing.utils.sqlalchemy_invoice_generation import FetchInvoices
 
 logger = logging.getLogger(__name__)
 
@@ -117,6 +119,85 @@ def post_all_purchases_to_gstzen(session=None):
             batch_size=500
         )
         logger.info(f"Bulk updated {len(modified_objects)} purchase invoices with cloud sync results")
+        config_results = {}
+        for pi in modified_objects:
+            cfg = pi.configuration
+            if cfg.id not in config_results:
+                config_results[cfg.id] = {"config": cfg, "successes": [], "errors": [], "success_objects": [], "error_objects": []}
+            
+            # Extract Invoice Number for reporting
+            inv_no = pi.ctin
+            if pi.purchase_json and isinstance(pi.purchase_json, dict):
+                inv_no = pi.purchase_json.get("DocDtls", {}).get("No", inv_no)
+
+            if pi.purchase_status == PurchaseInvoice.PIS_UPLOADED:
+                config_results[cfg.id]["successes"].append(inv_no)
+                config_results[cfg.id]["success_objects"].append(pi)
+            else:
+                err_msg = "Unknown error"
+                if pi.purchase_response and isinstance(pi.purchase_response, dict):
+                    err_msg = pi.purchase_response.get("message", "Unknown error")
+                config_results[cfg.id]["errors"].append(f"Invoice {inv_no}: {err_msg}")
+                config_results[cfg.id]["error_objects"].append(pi)
+
+        class CloudSyncEmailer(FetchInvoices):
+            def do_all(self): pass
+            def get_unvalidated_lineitems(self): pass
+
+            def complete_init(self):
+                # Set filename for attachment if it's a file-based source
+                from invoicing.utils.datasource.databases import get_excel_filepath_for_glob
+                si = SettingsInfo(self.configuration)
+                ds_settings = si.datasource_settings
+                
+                # Fallback to Global Configuration if Site configuration is empty
+                if not ds_settings or not ds_settings.get("config"):
+                    from invoicing.models import GlobalConfiguration
+                    si = SettingsInfo(GlobalConfiguration.get_solo())
+                    ds_settings = si.datasource_settings
+                
+                ds_type = ds_settings.get("type", "")
+                if ds_type.startswith("file:"):
+                    path_pattern = ds_settings.get("config", {}).get("path")
+                    if path_pattern:
+                        try:
+                            self.filename = get_excel_filepath_for_glob(path_pattern)
+                            logger.info(f"CloudSyncEmailer: Found attachment file: {self.filename}")
+                        except Exception as e:
+                            logger.warning(f"CloudSyncEmailer: Could not find source file for attachment: {path_pattern}. Error: {e}")
+
+        for results in config_results.values():
+            cfg = results["config"]
+            si = SettingsInfo(cfg)
+            notification = si.notification_settings
+            
+            if not notification or not notification.get("email_details"):
+                continue
+                
+            emailer = CloudSyncEmailer(cfg, session, {}, {}, notification)
+            
+            if results["successes"]:
+                emailer.send_emails(
+                    [], 
+                    notification, 
+                    success=True, 
+                    successes=results["successes"], 
+                    subject="success response fromthe cloudzen",
+                    invoices=results["success_objects"],
+                    file_prefix="success"
+                )
+                logger.info(f"Sent cloud success email for {cfg}")
+            
+            if results["errors"]:
+                emailer.send_emails(
+                    results["errors"], 
+                    notification, 
+                    success=False, 
+                    subject="error resposnse from the cloudzen",
+                    invoices=results["error_objects"],
+                    file_prefix="error"
+                )
+                logger.info(f"Sent cloud error email for {cfg}")
 
     if session and all_errors:
         distinct_errors = list(dict.fromkeys(all_errors))

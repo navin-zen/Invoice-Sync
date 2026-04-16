@@ -1,0 +1,21 @@
+
+{% block content %}
+<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <p>Hi,</p>
+    <p style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border-left: 5px solid #dc3545;">
+        The purchase invoice synchronization for <strong>{{ configuration.site_name }}</strong> has completed with <strong style="color: #dc3545;">ERRORS</strong>.
+    </p>
+    <p><strong>Detailed Errors (First 10):</strong></p>
+    <ul style="color: #721c24;">
+        {% for error in errors|slice:":10" %}
+        <li>{{ error }}</li>
+        {% endfor %}
+        {% if errors|length > 10 %}
+        <li>... and more</li>
+        {% endif %}
+    </ul>
+    <p>The original data file reflects these issues.</p>
+    <p style="color: #6c757d; font-size: 0.9em;"><strong>Note:</strong> Detailed reports are attached to this email and saved in the server's reports folder.</p>
+    <p>Regards,<br><strong>Team GstZen</strong></p>
+</div>
+{% endblock %}

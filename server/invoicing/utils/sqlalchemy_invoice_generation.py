@@ -12,7 +12,7 @@ from decimal import Decimal
 import sqlalchemy
 from django.conf import settings
 from django.core import mail
-from django.utils import timezone
+from django.template.loader import render_to_string
 from invoicing.models import CachedData, Configuration
 from invoicing.utils.api.common import typecast_and_get_state
 from invoicing.utils.datamapper.purchase_fields_spec import (
@@ -274,10 +274,16 @@ class FetchInvoices(metaclass=abc.ABCMeta):
                     cls.transform_column(r, field, fn, userTransFn, default_info)
         return r
 
-    def send_emails(self, errors, notifications):
+    def send_emails(self, errors, notifications, success=False, successes=None, subject=None, invoices=None, file_prefix="report"):
         email_details = notifications.get("email_details")
-        if email_details is None or not errors:
+        if email_details is None:
             return
+        
+        # If success email requested but no success happened (not applicable usually as we call it explicitly)
+        # or if error email requested but no errors
+        if not success and not errors:
+            return
+
         recipient_list = email_details.get("emails")
         from_email = email_details.get("from_email")
         auth_user = email_details.get("auth_user")
@@ -285,20 +291,86 @@ class FetchInvoices(metaclass=abc.ABCMeta):
         host = email_details.get("host")
         port = email_details.get("port")
         if_ssl = (email_details.get("if_ssl", "NO")).upper()
-        ssl = if_ssl in ["YES", "Y"]
-        tsl = not ssl
+        ssl = if_ssl in ["SSL", "YES", "Y"]
+        tls = if_ssl in ["TLS", "STARTTLS"]
+        
+        # If it was "NO", both remain False. If it was "YES/SSL", ssl is True. If "TLS", tls is True.
+        # This prevents forcing TLS when if_ssl is "NO".
+
+        if success:
+            subject = subject or "Sync Successful"
+            template = "invoicing/emails/sync_success.html"
+            context = {"configuration": self.configuration, "successes": successes or []}
+        else:
+            subject = subject or "Errors while Syncing"
+            template = "invoicing/emails/sync_error.html"
+            context = {"configuration": self.configuration, "errors": errors}
+
+        html_content = render_to_string(template, context)
+
         try:
             with mail.get_connection(
-                fail_silently=True,
+                fail_silently=False,
                 host=host,
                 port=port,
                 username=auth_user,
                 password=auth_password,
-                use_tls=tsl,
+                use_tls=tls,
                 use_ssl=ssl,
             ) as connection:
-                mail.EmailMessage("Errors while Syncing", str(errors), from_email, recipient_list, connection=connection).send()
+                msg = mail.EmailMessage(
+                    subject,
+                    html_content,
+                    from_email,
+                    recipient_list,
+                    connection=connection
+                )
+                msg.content_subtype = "html"
+                
+                # Attach file if it exists or generate one if invoices are provided
+                if self.filename and os.path.exists(self.filename):
+                    logger.info(f"Attaching file: {self.filename}")
+                    import mimetypes
+                    content_type, _ = mimetypes.guess_type(self.filename)
+                    if content_type is None:
+                        content_type = 'application/octet-stream'
+                    
+                    file_content = open(self.filename, 'rb').read()
+                    logger.info(f"Attachment size: {len(file_content)} bytes")
+                    msg.attach(os.path.basename(self.filename), file_content, content_type)
+                elif invoices:
+                    # Generate Excel on the fly
+                    from io import BytesIO
+                    from invoicing.views.invoicing import InvoiceExportGenerator
+                    output = BytesIO()
+                    generator = InvoiceExportGenerator(invoices)
+                    generator.write(output)
+                    output.seek(0)
+                    
+                    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+                    file_name = f"{file_prefix}_{self.configuration.site_name}_{timestamp}.xlsx"
+                    xlsx_data = output.read()
+                    msg.attach(file_name, xlsx_data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                    
+                    try:
+                        reports_dir = os.path.join(settings.BASE_DIR, "reports")
+                        if not os.path.exists(reports_dir):
+                            os.makedirs(reports_dir, exist_ok=True)
+                        
+                        local_path = os.path.join(reports_dir, file_name)
+                        with open(local_path, "wb") as f:
+                            f.write(xlsx_data)
+                        logger.info(f"Saved local copy of report to: {local_path}")
+                    except Exception as e:
+                        logger.error(f"Failed to save local copy of report: {e}")
+
+                    logger.info(f"Generated and attached Excel report: {file_name}")
+                else:
+                    logger.info("No filename provided and no invoices to generate report from")
+                
+                msg.send()
         except Exception as ex:
+            logger.exception("Failed to send email")
             return ex
 
     def write_error_file(self, errors):
